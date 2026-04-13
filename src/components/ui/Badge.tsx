@@ -1,5 +1,5 @@
-import { DeviceStatus } from "../../types/device.types";
-import { UserRole } from "../../types/auth.types";
+import type { DeviceStatus } from "../../types/device.types";
+import type { UserRole } from "../../types/auth.types";
 
 type BadgeType = DeviceStatus | UserRole;
 
