@@ -80,3 +80,18 @@ body {
 .animate-pulse {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+@keyframes slide-up {
+  from { 
+    transform: translateY(12px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-medium) var(--ease-out) both;
+}
