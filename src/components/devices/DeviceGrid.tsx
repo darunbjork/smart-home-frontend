@@ -1,8 +1,8 @@
 import { useContext, useState, useMemo } from "react";
 import { DeviceContext } from "../../context/DeviceContext";
 import { DeviceCard } from "./DeviceCard";
-import { DeviceFilters } from "./DeviceFilters";
 import { Button } from "../ui/Button";
+import { DeviceFilters } from "./DeviceFilters";
 
 interface DeviceGridProps {
   onAddClick: () => void;
@@ -11,7 +11,7 @@ interface DeviceGridProps {
 export const DeviceGrid = ({ onAddClick }: DeviceGridProps) => {
   const deviceCtx = useContext(DeviceContext);
   const [filters, setFilters] = useState({ search: "", type: "all" });
-
+  
   const { devices = [], isLoading = false } = deviceCtx?.state || {};
 
   const filteredDevices = useMemo(() => {
@@ -22,21 +22,25 @@ export const DeviceGrid = ({ onAddClick }: DeviceGridProps) => {
     });
   }, [devices, filters]);
 
-  if (!deviceCtx) return null;
+  if (!deviceCtx) {
+    return null; // Or some fallback UI
+  }
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-(--space-6)">
         {[...Array(6)].map((_, i) => (
-          <div 
-            key={i} 
-            className="h-40 bg-(--bg-surface) border border-(--border) rounded-(--space-3) animate-pulse" 
+          <div
+            key={i}
+            className="h-40 bg-(--bg-surface) border border-(--border) rounded-(--space-3) animate-pulse"
           />
         ))}
       </div>
     );
   }
 
+  // 2. Initial Empty State (No devices at all)
+  // This condition should check 'devices' before any filtering has occurred
   if (devices.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-(--space-16) border-2 border-dashed border-(--border) rounded-(--space-4) text-center bg-(--bg-surface)/50">
