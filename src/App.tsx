@@ -1,36 +1,44 @@
-import { Button } from "./components/ui/Button";
-import { Badge } from "./components/ui/Badge";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { LoginPage } from "./pages/LoginPage";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { PublicRoute } from "./components/auth/PublicRoute";
+
+// Temporary placeholder for the Dashboard
+const DashboardPlaceholder = () => (
+  <div className="p-[var(--space-8)]">
+    <h1 className="text-[var(--text-3xl)]">Dashboard</h1>
+    <p className="text-[var(--text-secondary)]">Secure content goes here.</p>
+  </div>
+);
 
 function App() {
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] p-[var(--space-8)] flex flex-col items-center">
-      {/* Container Card */}
-      <div className="w-full max-w-md bg-[var(--bg-surface)] border border-[var(--border)] rounded-[var(--space-3)] p-[var(--space-6)] flex flex-col gap-[var(--space-4)] animate-slide-up">
+    <Router>
+      <Routes>
+        {/* Public Routes: Only accessible if NOT logged in */}
+        <Route path="/login" element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        } />
         
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-[var(--text-lg)] font-[var(--weight-bold)] text-[var(--text-primary)]">
-              Living Room Light
-            </h1>
-            <p className="text-[var(--text-sm)] text-[var(--text-secondary)]">
-              ID: 8823-X92
-            </p>
-          </div>
-          <Badge value="online" />
-        </div>
+        <Route path="/register" element={
+          <PublicRoute>
+            <div className="text-center p-10">Register Page (TBD)</div>
+          </PublicRoute>
+        } />
 
-        <div className="h-[1px] bg-[var(--border)] w-full" />
+        {/* Protected Routes: Only accessible if logged in */}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <DashboardPlaceholder />
+          </ProtectedRoute>
+        } />
 
-        <div className="flex gap-[var(--space-3)]">
-          <Button variant="primary" size="sm" onClick={() => console.log("On")}>
-            Turn On
-          </Button>
-          <Button variant="secondary" size="sm">
-            Settings
-          </Button>
-        </div>
-      </div>
-    </div>
+        {/* Catch-all: Redirect unknown paths to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
