@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { Dashboard } from "./pages/Dashboard";
 import { MainLayout } from "./components/layout/MainLayout";
+import { SettingsPage } from "./pages/SettingsPage";
 
 function App() {
   return (
@@ -27,6 +28,15 @@ function App() {
           <ProtectedRoute>
             <MainLayout> {/* Wrap Dashboard with MainLayout */}
               <Dashboard />
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+
+        {/* Add the Settings page route */}
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <SettingsPage />
             </MainLayout>
           </ProtectedRoute>
         } />
