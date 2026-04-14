@@ -1,4 +1,4 @@
-import { useReducer, type ReactNode, useContext } from "react";
+import { useReducer, type ReactNode, useContext, useEffect } from "react";
 import { HouseholdContext, type HouseholdContextValue } from "./HouseholdContextSetup"; 
 import { householdReducer } from "../reducers/household.reducer";
 import { householdApi } from "../api/household.api";
@@ -32,6 +32,10 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
 
   // Ensure the value passed matches the interface
   const contextValue: HouseholdContextValue = { state, fetchHouseholds, createHousehold, setActive };
+
+  useEffect(() => {
+    fetchHouseholds();
+  }, []);
 
   return (
     <HouseholdContext.Provider value={contextValue}>
