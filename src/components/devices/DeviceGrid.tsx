@@ -1,12 +1,17 @@
 import { useContext } from "react";
 import { DeviceContext } from "../../context/DeviceContext";
 import { DeviceCard } from "./DeviceCard";
+import { Button } from "../ui/Button"; // Added import for Button
 
-export const DeviceGrid = () => {
+interface DeviceGridProps {
+  onAddClick: () => void;
+}
+
+export const DeviceGrid = ({ onAddClick }: DeviceGridProps) => {
   const deviceCtx = useContext(DeviceContext);
 
   if (!deviceCtx) return null;
-  const { devices, isLoading } = deviceCtx.state;
+    const { devices, isLoading } = deviceCtx.state;
 
   // 1. Loading State (Skeleton Grid)
   if (isLoading) {
@@ -22,13 +27,20 @@ export const DeviceGrid = () => {
     );
   }
 
+  // 2. Empty State
   if (devices.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-[var(--space-12)] border-2 border-dashed border-[var(--border)] rounded-[var(--space-4)] text-center">
-        <h3 className="text-[var(--text-lg)] font-[var(--weight-bold)]">No devices found</h3>
-        <p className="text-[var(--text-secondary)] mb-[var(--space-4)]">
-          Start by adding your first smart device to this household.
+      <div className="flex flex-col items-center justify-center p-[var(--space-16)] border-2 border-dashed border-[var(--border)] rounded-[var(--space-4)] text-center bg-[var(--bg-surface)]/50">
+        <div className="w-16 h-16 bg-[var(--bg-primary)] rounded-full flex items-center justify-center mb-4 border border-[var(--border)]">
+           <span className="text-2xl text-[var(--text-secondary)]">🔌</span>
+        </div>
+        <h3 className="text-[var(--text-xl)] font-[var(--weight-bold)] mb-2">No devices found</h3>
+        <p className="text-[var(--text-secondary)] mb-6 max-w-xs mx-auto">
+          Your home is a bit quiet. Connect your first smart light or sensor to get started.
         </p>
+        <Button variant="secondary" onClick={onAddClick}>
+          Connect Your First Device
+        </Button>
       </div>
     );
   }

@@ -2,22 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { LoginPage } from "./pages/LoginPage";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
-import { OwnerGuard } from "./components/auth/OwnerGuard";
-import { Button } from "./components/ui/Button";
-import { DeviceGrid } from "./components/devices/DeviceGrid";
-
-
-// Temporary placeholder for the Dashboard
-const DashboardPlaceholder = () => (
-  <div className="p-[var(--space-8)] flex flex-col gap-4">
-    <h1 className="text-[var(--text-3xl)]">Household Dashboard</h1>
-     <DeviceGrid />
-    <OwnerGuard fallback={<p className="text-[var(--text-muted)] text-sm">Read-only Member View</p>}>
-       <Button variant="destructive">Delete Household (Owner Only)</Button>
-      
-    </OwnerGuard>
-  </div>
-);
+import { Dashboard } from "./pages/Dashboard"; 
 
 function App() {
   return (
@@ -39,7 +24,7 @@ function App() {
         {/* Protected Routes: Only accessible if logged in */}
         <Route path="/" element={
           <ProtectedRoute>
-            <DashboardPlaceholder />
+            <Dashboard /> {/* Use the actual Dashboard component */}
           </ProtectedRoute>
         } />
 

@@ -26,7 +26,6 @@ export const AddDeviceForm = ({ onSuccess }: { onSuccess: () => void }) => {
       onSuccess();
     } catch (err) {
       console.error("Failed to create device", err);
-      // In a real app, you'd handle errors more gracefully, e.g., show a toast
     } finally {
       setIsSubmitting(false);
     }
