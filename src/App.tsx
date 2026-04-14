@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { LoginPage } from "./pages/LoginPage";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { PublicRoute } from "./components/auth/PublicRoute";
-import { Dashboard } from "./pages/Dashboard"; 
+import { Dashboard } from "./pages/Dashboard";
+import { MainLayout } from "./components/layout/MainLayout";
 
 function App() {
   return (
@@ -24,7 +25,9 @@ function App() {
         {/* Protected Routes: Only accessible if logged in */}
         <Route path="/" element={
           <ProtectedRoute>
-            <Dashboard /> {/* Use the actual Dashboard component */}
+            <MainLayout> {/* Wrap Dashboard with MainLayout */}
+              <Dashboard />
+            </MainLayout>
           </ProtectedRoute>
         } />
 
