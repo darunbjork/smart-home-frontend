@@ -1,12 +1,18 @@
 import { useHouseholds } from "../../context/HouseholdContext";
-import { Button } from "../ui/Button"; // Assuming Button is needed here, though not explicitly in the snippet.
 
 export const Sidebar = () => {
   const { state, setActive, createHousehold } = useHouseholds();
 
   const handleAddHousehold = async () => {
-    const name = prompt("Enter household name:");
-    if (name) await createHousehold(name);
+    const name = window.prompt("Enter new household name:");
+    if (!name) return;
+
+    try {
+      await createHousehold(name);
+      // The state will auto-update because of our HouseholdContext dispatch
+    } catch (err) {
+      console.error("Failed to create workspace:", err);
+    }
   };
 
   return (
