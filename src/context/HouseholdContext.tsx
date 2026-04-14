@@ -1,5 +1,4 @@
 import { useReducer, type ReactNode, useContext } from "react";
-// Import from the new setup file
 import { HouseholdContext, type HouseholdContextValue } from "./HouseholdContextSetup"; 
 import { householdReducer } from "../reducers/household.reducer";
 import { householdApi } from "../api/household.api";
