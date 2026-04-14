@@ -1,19 +1,26 @@
-import { useContext } from "react";
+import { useContext, memo } from "react"; // Added memo import
 import { DeviceContext } from "../../context/DeviceContext";
 import { Badge } from "../ui/Badge";
 import type { Device } from "../../types/device.types";
 import { LightControl } from "./controls/LightControl";
 
-export const DeviceCard = ({ device }: { device: Device }) => {
+const DeviceCardComponent = ({ device }: { device: Device }) => { // Renamed to Component for memoization
   const deviceCtx = useContext(DeviceContext);
 
-  if (!deviceCtx) return null;
+  // Safety check for context, though it should be provided by a parent Provider
+  if (!deviceCtx) {
+    console.error("DeviceContext not found");
+    return null; 
+  }
 
   // Logic to determine which control to render based on device type
   const renderControl = () => {
+    // Ensure device.data and device.data.on exist, default to false (off) if not
+    const isOn = device.data && device.data.on !== undefined ? !!device.data.on : false;
     switch (device.type.toLowerCase()) {
       case "light":
-        return <LightControl device={device} onToggle={() => deviceCtx.toggleDevice(device._id, !!device.data.on)} />;
+        // Pass the correct 'on' state to toggleDevice
+        return <LightControl device={device} onToggle={() => deviceCtx.toggleDevice(device._id, isOn)} />;
       default:
         return <p className="text-[var(--text-muted)] text-sm">No controls available</p>;
     }
@@ -37,3 +44,15 @@ export const DeviceCard = ({ device }: { device: Device }) => {
     </div>
   );
 };
+
+// Memoize the component with a custom comparison function
+export const DeviceCard = memo(DeviceCardComponent, (prevProps, nextProps) => {
+  // Only re-render if the device's status, data.on, or name has changed
+  // Using JSON.stringify for data comparison is simple but can be inefficient for large objects.
+  // For complex data structures, a deep comparison or more specific checks might be better.
+  return (
+    prevProps.device.status === nextProps.device.status &&
+    JSON.stringify(prevProps.device.data) === JSON.stringify(nextProps.device.data) &&
+    prevProps.device.name === nextProps.device.name
+  );
+});
