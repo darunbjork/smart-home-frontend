@@ -1,22 +1,22 @@
-export type UserRole = "owner" | "member";
-
 export interface User {
-  _id:        string;
-  username:   string;
-  email:      string;
-  role:       UserRole;
-  households: string[];
-  createdAt:  string;
-  updatedAt:  string;
+  id: string;
+  username: string;
+  email: string;
 }
 
 export interface AuthState {
-  user:        User | null;
+  user: User | null;
   accessToken: string | null;
-  isLoading:   boolean;
+  isLoading: boolean;
 }
 
-export interface LoginResponse { 
-  accessToken: string; 
-  user: User; 
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+  // username?: string; // Optional, can add if needed
 }
