@@ -4,12 +4,15 @@ import App from './App.tsx';
 import './index.css';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { HouseholdProvider } from './context/HouseholdContext.tsx';
+import { DeviceProvider } from './context/DeviceContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <HouseholdProvider>
-        <App />
+        <DeviceProvider> 
+          <App />
+        </DeviceProvider>
       </HouseholdProvider>
     </AuthProvider>
   </StrictMode>,
