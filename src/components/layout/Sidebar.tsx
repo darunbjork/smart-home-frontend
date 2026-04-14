@@ -17,36 +17,36 @@ export const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 h-full bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col">
-      <div className="p-[var(--space-6)] border-b border-[var(--border)]">
-        <h2 className="text-[var(--text-lg)] font-[var(--weight-bold)] flex items-center gap-2">
-          <span className="text-[var(--brand)]">🏠</span> SmartHome
+    <aside className="w-64 shrink-0 h-full bg-(--bg-surface) border-r border-(--border) flex flex-col">
+      <div className="p-(--space-6) border-b border-(--border)">
+        <h2 className="text-(--text-lg) font-(--weight-bold) flex items-center gap-2">
+          <span className="text-(--brand)">🏠</span> SmartHome
         </h2>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-[var(--space-4)]">
-        <div className="flex justify-between items-center mb-[var(--space-4)] px-[var(--space-2)]">
-          <span className="text-[var(--text-xs)] uppercase tracking-widest text-[var(--text-secondary)] font-[var(--weight-bold)]">
+      <nav className="flex-1 overflow-y-auto p-(--space-4)">
+        <div className="flex justify-between items-center mb-(--space-4) px-(--space-2)">
+          <span className="text-(--text-xs) uppercase tracking-widest font-(--weight-bold)">
             My Households
           </span>
           <button
             onClick={handleAddHousehold}
-            className="text-[var(--brand)] hover:opacity-80 text-sm font-bold"
+            className="text-(--brand) hover:opacity-80 text-sm font-bold"
           >
             + New
           </button>
         </div>
 
-        <div className="flex flex-col gap-[var(--space-1)]">
+        <div className="flex flex-col gap-(--space-1)">
           {state.households.map((h) => (
             <button
               key={h._id}
               onClick={() => setActive(h._id)}
               className={`
-                w-full text-left px-[var(--space-3)] py-[var(--space-2)] rounded-[var(--space-2)] transition-all
+                w-full text-left px-(--space-3) py-(--space-2) rounded-(--space-2) transition-all
                 ${state.activeHouseholdId === h._id
-                  ? "bg-[var(--brand)] text-white shadow-lg shadow-[var(--brand)]/20"
-                  : "text-[var(--text-secondary)] hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)]"}
+                  ? "bg-(--brand) text-white shadow-lg shadow-(--brand)/20"
+                  : "text-(--text-secondary) hover:bg-(--bg-primary) hover:text-(--text-primary)"}
               `}
             >
               {h.name}
@@ -56,20 +56,20 @@ export const Sidebar = () => {
       </nav>
 
       {/* Settings Link */}
-      <div className="p-[var(--space-4)] flex flex-col gap-2 mt-auto">
+      <div className="p-(--space-4) flex flex-col gap-2 mt-auto">
         <Link
           to="/settings"
           className={`px-4 py-2 rounded-lg text-sm transition-colors ${
             location.pathname === "/settings"
-              ? "bg-[var(--bg-primary)] text-[var(--brand)] font-bold"
-              : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              ? "bg-(--bg-primary) text-(--brand) font-bold"
+              : "text-(--text-secondary) hover:text-(--text-primary)"
           }`}
         >
           ⚙️ Settings
         </Link>
-        <div className="bg-[var(--bg-primary)] p-[var(--space-3)] rounded-[var(--space-2)]">
-            <p className="text-[var(--text-xs)] text-[var(--text-secondary)]">Active Workspace</p>
-            <p className="text-[var(--text-sm)] font-medium truncate">
+        <div className="bg-(--bg-primary) p-(--space-3) rounded-(--space-2)">
+            <p className="text-(--text-secondary)">Active Workspace</p>
+            <p className="text-(--text-sm) font-medium truncate">
                 {state.households.find(h => h._id === state.activeHouseholdId)?.name || "No Household"}
             </p>
         </div>
