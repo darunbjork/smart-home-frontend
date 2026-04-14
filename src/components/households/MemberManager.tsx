@@ -32,15 +32,15 @@ export const MemberManager = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 bg-[var(--bg-surface)] p-6 rounded-xl border border-[var(--border)]">
-      <header className="flex justify-between items-center">
+    <div className="flex flex-col gap-6 bg-(--bg-surface) p-6 rounded-xl border border-(--border)">
+      <header className="flex items-center justify-between">
         <h2 className="text-xl font-bold">Household Members</h2>
         <OwnerGuard>
           <form onSubmit={handleInvite} className="flex gap-2">
             <input 
               type="email" 
               placeholder="Email address..."
-              className="bg-[var(--bg-primary)] border border-[var(--border)] rounded-lg px-3 py-1 text-sm outline-none focus:border-[var(--brand)]"
+              className="bg-(--bg-primary) border border-(--border) rounded-lg px-3 py-1 text-sm outline-none focus:border-(--brand)"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -50,17 +50,17 @@ export const MemberManager = () => {
         </OwnerGuard>
       </header>
 
-      <div className="divide-y divide-[var(--border)]">
+      <div className="divide-y divide-(--border)">
         {members.map(m => (
-          <div key={m._id} className="py-3 flex justify-between items-center">
+          <div key={m._id} className="flex items-center justify-between py-3">
             <div>
               <p className="font-medium">{m.email}</p>
-              <p className="text-xs text-[var(--text-secondary)] uppercase">{m.role}</p>
+              <p className="text-xs text-(--text-secondary) uppercase">{m.role}</p>
             </div>
             {/* Owners see a delete button for anyone who isn't them */}
             <OwnerGuard>
               {m.role !== "owner" && (
-                <button className="text-[var(--error)] text-sm hover:underline">Remove</button>
+                <button className="text-(--error) text-sm hover:underline">Remove</button>
               )}
             </OwnerGuard>
           </div>
