@@ -1,7 +1,9 @@
 import { useHouseholds } from "../../context/HouseholdContext";
+import { Link, useLocation } from "react-router-dom";
 
 export const Sidebar = () => {
   const { state, setActive, createHousehold } = useHouseholds();
+  const location = useLocation();
 
   const handleAddHousehold = async () => {
     const name = window.prompt("Enter new household name:");
@@ -9,15 +11,13 @@ export const Sidebar = () => {
 
     try {
       await createHousehold(name);
-      // The state will auto-update because of our HouseholdContext dispatch
     } catch (err) {
       console.error("Failed to create workspace:", err);
     }
   };
 
   return (
-    // Added flex-shrink-0, changed h-screen to h-full
-    <aside className="w-64 flex-shrink-0 h-full bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col"> 
+    <aside className="w-64 flex-shrink-0 h-full bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col">
       <div className="p-[var(--space-6)] border-b border-[var(--border)]">
         <h2 className="text-[var(--text-lg)] font-[var(--weight-bold)] flex items-center gap-2">
           <span className="text-[var(--brand)]">🏠</span> SmartHome
@@ -29,7 +29,7 @@ export const Sidebar = () => {
           <span className="text-[var(--text-xs)] uppercase tracking-widest text-[var(--text-secondary)] font-[var(--weight-bold)]">
             My Households
           </span>
-          <button 
+          <button
             onClick={handleAddHousehold}
             className="text-[var(--brand)] hover:opacity-80 text-sm font-bold"
           >
@@ -44,8 +44,8 @@ export const Sidebar = () => {
               onClick={() => setActive(h._id)}
               className={`
                 w-full text-left px-[var(--space-3)] py-[var(--space-2)] rounded-[var(--space-2)] transition-all
-                ${state.activeHouseholdId === h._id 
-                  ? "bg-[var(--brand)] text-white shadow-lg shadow-[var(--brand)]/20" 
+                ${state.activeHouseholdId === h._id
+                  ? "bg-[var(--brand)] text-white shadow-lg shadow-[var(--brand)]/20"
                   : "text-[var(--text-secondary)] hover:bg-[var(--bg-primary)] hover:text-[var(--text-primary)]"}
               `}
             >
@@ -55,7 +55,18 @@ export const Sidebar = () => {
         </div>
       </nav>
 
-      <div className="p-[var(--space-4)] border-t border-[var(--border)]"> {/* Fixed typo */}
+      {/* Settings Link */}
+      <div className="p-[var(--space-4)] flex flex-col gap-2 mt-auto">
+        <Link
+          to="/settings"
+          className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+            location.pathname === "/settings"
+              ? "bg-[var(--bg-primary)] text-[var(--brand)] font-bold"
+              : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          }`}
+        >
+          ⚙️ Settings
+        </Link>
         <div className="bg-[var(--bg-primary)] p-[var(--space-3)] rounded-[var(--space-2)]">
             <p className="text-[var(--text-xs)] text-[var(--text-secondary)]">Active Workspace</p>
             <p className="text-[var(--text-sm)] font-medium truncate">
