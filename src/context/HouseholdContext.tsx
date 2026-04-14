@@ -30,8 +30,25 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
 
   const setActive = (id: string) => dispatch({ type: "SET_ACTIVE", payload: id });
 
+  const updateHousehold = async (id: string, updates: Partial<{name: string}>) => {
+    await householdApi.update(id, updates);
+    fetchHouseholds();
+  };
+
+  const deleteHousehold = async (id: string) => {
+    await householdApi.remove(id);
+    fetchHouseholds();
+  };
+
   // Ensure the value passed matches the interface
-  const contextValue: HouseholdContextValue = { state, fetchHouseholds, createHousehold, setActive };
+  const contextValue: HouseholdContextValue = { 
+    state, 
+    fetchHouseholds, 
+    createHousehold, 
+    updateHousehold, 
+    deleteHousehold, 
+    setActive 
+  };
 
   useEffect(() => {
     fetchHouseholds();
