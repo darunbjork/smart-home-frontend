@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHouseholds } from "../context/HouseholdContext";
 import { DeviceGrid } from "../components/devices/DeviceGrid";
 import { Modal } from "../components/ui/Modal";
 import { AddDeviceForm } from "../components/devices/AddDeviceForm";
@@ -6,26 +7,32 @@ import { Button } from "../components/ui/Button";
 
 export const Dashboard = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const { state: hState } = useHouseholds();
+  
+  // Find the current household object to get its name
+  const currentHousehold = hState.households.find(h => h._id === hState.activeHouseholdId);
 
   return (
-    <div className="max-w-7xl mx-auto p-[var(--space-8)] animate-fade-in">
-      <header className="flex justify-between items-center mb-[var(--space-10)]">
+    <div className="mx-auto max-w-7xl animate-fade-in">
+      <header className="flex justify-between items-end mb-(--space-10)">
         <div>
-          <h1 className="text-[var(--text-4xl)] font-[var(--weight-bold)] tracking-tight">
-            Dashboard
+          <h1 className="text-(--text-4xl) font-(--weight-bold) tracking-tight">
+            {currentHousehold?.name || "Select a Household"}
           </h1>
-          <p className="text-[var(--text-secondary)]">Manage your connected devices</p>
+          <p className="text-(--text-secondary)">
+            {hState.activeHouseholdId ? "Manage your connected devices" : "Choose a workspace from the sidebar to begin"}
+          </p>
         </div>
         
         <Button 
           variant="primary" 
+          disabled={!hState.activeHouseholdId} // Prevent adding devices to nothing
           onClick={() => setIsAddModalOpen(true)}
         >
           + Add Device
         </Button>
       </header>
 
-      {/* Passing the open state to the grid so it can render its own "Add" button in empty state */}
       <DeviceGrid onAddClick={() => setIsAddModalOpen(true)} />
 
       <Modal 
