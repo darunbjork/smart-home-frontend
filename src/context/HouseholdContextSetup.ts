@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { createContext } from "react";
 import type { HouseholdState } from "../types/household.types";
 
@@ -11,3 +12,11 @@ export interface HouseholdContextValue {
 }
 
 export const HouseholdContext = createContext<HouseholdContextValue | null>(null);
+
+export const useHouseholds = () => {
+  const context = useContext(HouseholdContext);
+  if (!context) {
+    throw new Error("useHouseholds must be used within a HouseholdProvider");
+  }
+  return context;
+};
