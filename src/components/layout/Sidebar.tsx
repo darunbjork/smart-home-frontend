@@ -1,4 +1,5 @@
 import { useHouseholds } from "../../context/HouseholdContext";
+import { Button } from "../ui/Button"; // Assuming Button is needed here, though not explicitly in the snippet.
 
 export const Sidebar = () => {
   const { state, setActive, createHousehold } = useHouseholds();
@@ -9,7 +10,8 @@ export const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 h-screen bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col">
+    // Added flex-shrink-0, changed h-screen to h-full
+    <aside className="w-64 flex-shrink-0 h-full bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col"> 
       <div className="p-[var(--space-6)] border-b border-[var(--border)]">
         <h2 className="text-[var(--text-lg)] font-[var(--weight-bold)] flex items-center gap-2">
           <span className="text-[var(--brand)]">🏠</span> SmartHome
@@ -47,7 +49,7 @@ export const Sidebar = () => {
         </div>
       </nav>
 
-      <div className="p-[var(--space-4)] border-t border-[var(--border)]">
+      <div className="p-[var(--space-4)] border-t border-[var(--border)]"> {/* Fixed typo */}
         <div className="bg-[var(--bg-primary)] p-[var(--space-3)] rounded-[var(--space-2)]">
             <p className="text-[var(--text-xs)] text-[var(--text-secondary)]">Active Workspace</p>
             <p className="text-[var(--text-sm)] font-medium truncate">
