@@ -6,7 +6,7 @@ export interface DeviceData {
   temperature?: number;
   humidity?:    number;
   locked?:      boolean;
-  [key: string]: unknown; // Flexible but safe - never 'any'
+  [key: string]: unknown; // * Flexible but safe - never 'any'
 }
 
 export interface Device {
