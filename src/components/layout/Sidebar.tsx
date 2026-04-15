@@ -1,7 +1,8 @@
-import { useHouseholds } from "../../context/HouseholdContext";
+import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { Link, useLocation } from "react-router-dom";
+import type { Household } from "../../types/household.types"; // Import Household type
 
-export const Sidebar = () => {
+export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { state, setActive, createHousehold } = useHouseholds();
   const location = useLocation();
 
@@ -14,6 +15,11 @@ export const Sidebar = () => {
     } catch (err) {
       console.error("Failed to create workspace:", err);
     }
+  };
+
+  const handleSelect = (id: string) => {
+    setActive(id);
+    if (onClose) onClose(); // Close drawer on mobile after selection
   };
 
   return (
@@ -38,10 +44,10 @@ export const Sidebar = () => {
         </div>
 
         <div className="flex flex-col gap-(--space-1)">
-          {state.households.map((h) => (
+          {state.households.map((h: Household) => (
             <button
               key={h._id}
-              onClick={() => setActive(h._id)}
+              onClick={() => handleSelect(h._id)}
               className={`
                 w-full text-left px-(--space-3) py-(--space-2) rounded-(--space-2) transition-all
                 ${state.activeHouseholdId === h._id
@@ -55,7 +61,6 @@ export const Sidebar = () => {
         </div>
       </nav>
 
-      {/* Settings Link */}
       <div className="p-(--space-4) flex flex-col gap-2 mt-auto">
         <Link
           to="/settings"
@@ -70,7 +75,7 @@ export const Sidebar = () => {
         <div className="bg-(--bg-primary) p-(--space-3) rounded-(--space-2)">
             <p className="text-(--text-secondary)">Active Workspace</p>
             <p className="text-(--text-sm) font-medium truncate">
-                {state.households.find(h => h._id === state.activeHouseholdId)?.name || "No Household"}
+                {state.households.find((h: Household) => h._id === state.activeHouseholdId)?.name || "No Household"}
             </p>
         </div>
       </div>
