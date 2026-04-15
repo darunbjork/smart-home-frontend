@@ -1,6 +1,7 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { tokenUtils } from "../utils/token";
 import { authApi } from "./auth.api";
+import { globalShowToast } from "../services/toast.service"; // Import globalShowToast
 
 export interface RetryableAxiosConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -53,10 +54,16 @@ api.interceptors.response.use(
         if (typeof window !== 'undefined') {
             window.location.href = "/login";
         }
+        globalShowToast("Your session has expired. Please log in again.", "error"); // Show toast for session expiry
         return Promise.reject(refreshError);
       }
     }
     
+    // Global error message for the user for other errors (e.g., 500)
+    const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+    console.error("API Error:", errorMessage, error.response);
+    globalShowToast(errorMessage, "error");
+
     return Promise.reject(error);
   }
 );

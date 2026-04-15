@@ -1,4 +1,5 @@
-import { createContext, useState, useContext, type ReactNode, useCallback } from "react";
+import { createContext, useState, useContext, type ReactNode, useCallback, useEffect } from "react";
+import { setToastFunction } from "../services/toast.service"; // Import setToastFunction
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -8,7 +9,7 @@ interface Toast {
   type: ToastType;
 }
 
-interface ToastContextValue {
+export interface ToastContextValue {
   showToast: (message: string, type?: ToastType) => void;
 }
 
@@ -25,6 +26,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
   }, []);
+
+  // Register showToast function globally for non-React modules
+  useEffect(() => {
+    setToastFunction(showToast);
+  }, [showToast]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

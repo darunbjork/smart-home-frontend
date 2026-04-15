@@ -4,8 +4,9 @@ import { SceneCard } from "../components/scenes/SceneCard";
 import { sceneApi } from "../api/scene.api"; 
 import type { Scene } from "../types/scene.types"; 
 import { useHouseholds } from "../context/HouseholdContextSetup"; 
-import { Button } from "../components/ui/Button"; // Corrected import
-import { EnergyChart } from "../components/analytics/EnergyChart"; // New import
+import { Button } from "../components/ui/Button";
+import { EnergyChart } from "../components/analytics/EnergyChart";
+import { ErrorBoundary } from "../components/auth/ErrorBoundary";
 
 export const Dashboard = () => {
   const [scenes, setScenes] = useState<Scene[]>([]);
@@ -35,23 +36,27 @@ export const Dashboard = () => {
       )}
 
       {/* New Analytics Section */}
-      <section>
-        <EnergyChart />
-      </section>
+      <ErrorBoundary>
+        <section>
+          <EnergyChart />
+        </section>
+      </ErrorBoundary>
 
-      <section>
-        <header className="flex items-end justify-between mb-8">
-           <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
-           <Button // Replaced raw button
-             variant="ghost" 
-             onClick={() => setIsAddModalOpen(true)} 
-             className="text-sm font-semibold text-(--brand) hover:underline"
-           >
-             + Add Device
-           </Button>
-        </header>
-        <DeviceGrid onAddClick={() => setIsAddModalOpen(true)} />
-      </section>
+      <ErrorBoundary>
+        <section>
+          <header className="flex items-end justify-between mb-8">
+             <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
+             <Button 
+               variant="ghost" 
+               onClick={() => setIsAddModalOpen(true)} 
+               className="text-sm font-semibold text-(--brand) hover:underline"
+             >
+               + Add Device
+             </Button>
+          </header>
+          <DeviceGrid onAddClick={() => setIsAddModalOpen(true)} />
+        </section>
+      </ErrorBoundary>
       
      {isAddModalOpen && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -71,4 +76,5 @@ export const Dashboard = () => {
     </div>
   );
 };
+
 
