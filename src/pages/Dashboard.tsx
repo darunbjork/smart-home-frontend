@@ -4,7 +4,8 @@ import { SceneCard } from "../components/scenes/SceneCard";
 import { sceneApi } from "../api/scene.api"; 
 import type { Scene } from "../types/scene.types"; 
 import { useHouseholds } from "../context/HouseholdContextSetup"; 
-import { Button } from "@src/components/ui/Button";
+import { Button } from "../components/ui/Button"; // Corrected import
+import { EnergyChart } from "../components/analytics/EnergyChart"; // New import
 
 export const Dashboard = () => {
   const [scenes, setScenes] = useState<Scene[]>([]);
@@ -33,15 +34,21 @@ export const Dashboard = () => {
         </section>
       )}
 
+      {/* New Analytics Section */}
+      <section>
+        <EnergyChart />
+      </section>
+
       <section>
         <header className="flex items-end justify-between mb-8">
            <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
-           <button 
+           <Button // Replaced raw button
+             variant="ghost" 
              onClick={() => setIsAddModalOpen(true)} 
              className="text-sm font-semibold text-(--brand) hover:underline"
            >
              + Add Device
-           </button>
+           </Button>
         </header>
         <DeviceGrid onAddClick={() => setIsAddModalOpen(true)} />
       </section>
@@ -51,7 +58,7 @@ export const Dashboard = () => {
     <div className="p-8 rounded-lg bg-(--bg-secondary) border border-(--border-color)">
       <h2 className="mb-4 text-xl font-bold text-(--text-primary)">Add Device Modal</h2>
       <p className="text-(--text-secondary)">Content for adding a new device goes here...</p>
-      <Button
+      <Button 
         variant="secondary"
         onClick={() => setIsAddModalOpen(false)}
       >
@@ -64,3 +71,4 @@ export const Dashboard = () => {
     </div>
   );
 };
+
