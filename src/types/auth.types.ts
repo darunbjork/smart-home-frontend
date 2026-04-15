@@ -4,6 +4,8 @@ export interface User {
   email: string;
 }
 
+export type UserRole = 'owner' | 'member';
+
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -18,5 +20,5 @@ export interface LoginDto {
 export interface RegisterDto {
   email: string;
   password: string;
-  // username?: string; // Optional, can add if needed
+  username?: string; // Optional, can add if needed
 }
