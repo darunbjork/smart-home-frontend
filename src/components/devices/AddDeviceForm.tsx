@@ -32,23 +32,23 @@ export const AddDeviceForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-[var(--space-6)]">
-      <div className="flex flex-col gap-[var(--space-2)]">
-        <label className="text-[var(--text-sm)] text-[var(--text-secondary)]">Device Name</label>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-(--space-6)">
+      <div className="flex flex-col gap-(--space-2)">
+        <label className="text-(--text-sm)">Device Name</label>
         <input 
           autoFocus
           required
-          className="bg-[var(--bg-primary)] border border-[var(--border)] rounded-[var(--space-1)] p-[var(--space-3)] outline-none focus:border-[var(--brand)]"
+          className="bg-(--bg-primary) border border-(--border) rounded-(--space-1) p-(--space-3) outline-none focus:border-(--brand)"
           placeholder="e.g. Kitchen Chandelier"
           value={formData.name}
           onChange={e => setFormData({ ...formData, name: e.target.value })}
         />
       </div>
 
-      <div className="flex flex-col gap-[var(--space-2)]">
-        <label className="text-[var(--text-sm)] text-[var(--text-secondary)]">Device Type</label>
+      <div className="flex flex-col gap-(--space-2)">
+        <label className="text-(--text-sm)">Device Type</label>
         <select 
-          className="bg-[var(--bg-primary)] border border-[var(--border)] rounded-[var(--space-1)] p-[var(--space-3)] outline-none"
+          className="bg-(--bg-primary) border border-(--border) rounded-(--space-1) p-(--space-3) outline-none"
           value={formData.type}
           onChange={e => setFormData({ ...formData, type: e.target.value })}
         >

@@ -18,19 +18,19 @@ export const DeviceFilters = ({ onFilterChange }: DeviceFiltersProps) => {
   }, [search, type, onFilterChange]);
 
   return (
-    <div className="flex flex-wrap gap-[var(--space-4)] mb-[var(--space-8)]">
-      <div className="flex-1 min-w-[200px]">
+    <div className="flex flex-wrap gap-(--space-4) mb-(--space-8)">
+      <div className="flex-1 min-w-50">
         <input
           type="text"
           placeholder="Search devices by name..."
-          className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-[var(--space-2)] px-[var(--space-4)] py-[var(--space-2)] focus:border-[var(--brand)] outline-none transition-all"
+          className="w-full bg-(--bg-surface) border border-(--border) rounded-(--space-2) px-(--space-4) py-(--space-2) focus:border-(--brand) outline-none transition-all"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
       <select
-        className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-[var(--space-2)] px-[var(--space-4)] py-[var(--space-2)] text-[var(--text-secondary)] outline-none focus:border-[var(--brand)]"
+        className="bg-(--bg-surface) border border-(--border) rounded-(--space-2) px-(--space-4) py-(--space-2) text-(--text-secondary) outline-none focus:border-(--brand)"
         value={type}
         onChange={(e) => setType(e.target.value)}
       >

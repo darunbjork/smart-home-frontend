@@ -40,7 +40,7 @@ export const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`rounded-[var(--space-1)] font-[var(--weight-medium)] transition-all duration-[var(--duration-small)] flex items-center justify-center gap-[var(--space-2)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]}`}
+      className={`rounded-(--space-1) font-(--weight-medium) transition-all duration-(--duration-small) flex items-center justify-center gap-(--space-2) active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]}`}
     >
       {loading ? <span className="animate-pulse">...</span> : children}
     </button>

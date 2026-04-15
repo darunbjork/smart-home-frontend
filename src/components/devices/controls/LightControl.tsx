@@ -11,9 +11,9 @@ export const LightControl = ({ device, onToggle }: LightControlProps) => {
   const isOn = !!device?.data?.on; 
 
   return (
-    <div className="flex items-center justify-between bg-[var(--bg-primary)] p-[var(--space-2)] rounded-[var(--space-2)]">
-      <span className="text-[var(--text-sm)]">
-        Status: <strong className={isOn ? "text-[var(--brand)]" : "text-[var(--text-secondary)]"}>
+    <div className="flex items-center justify-between bg-(--bg-primary) p-(--space-2) rounded-(--space-2)">
+      <span className="text-(--text-sm)">
+        Status: <strong className={isOn ? "text-(--brand)" : "text-(--text-secondary)"}>
           {isOn ? "ON" : "OFF"}
         </strong>
       </span>
