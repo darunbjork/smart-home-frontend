@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "../components/ui/Button";
+import { Link } from "react-router-dom";
 
 export const LoginPage = () => {
   const auth = useContext(AuthContext);
@@ -67,6 +68,13 @@ export const LoginPage = () => {
         <Button type="submit" loading={isSubmitting} variant="primary">
           Sign In
         </Button>
+
+        <p className="text-center text-(--text-sm)">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-(--brand) hover:underline">
+            Create one
+          </Link>
+        </p>
       </form>
     </div>
   );
