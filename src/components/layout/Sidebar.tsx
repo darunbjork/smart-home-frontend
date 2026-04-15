@@ -1,9 +1,12 @@
 import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { Link, useLocation } from "react-router-dom";
-import type { Household } from "../../types/household.types"; // Import Household type
+import type { Household } from "../../types/household.types";
+import { useAuth } from "../../context/AuthContextSetup"; 
 
 export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
-  const { state, setActive, createHousehold } = useHouseholds();
+  const { state: householdState, setActive, createHousehold } = useHouseholds();
+  const { state: authState } = useAuth();
+  const user = authState.user;
   const location = useLocation();
 
   const handleAddHousehold = async () => {
@@ -19,7 +22,7 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
 
   const handleSelect = (id: string) => {
     setActive(id);
-    if (onClose) onClose(); // Close drawer on mobile after selection
+    if (onClose) onClose();
   };
 
   return (
@@ -44,13 +47,13 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
         </div>
 
         <div className="flex flex-col gap-(--space-1)">
-          {state.households.map((h: Household) => (
+          {householdState.households.map((h: Household) => (
             <button
               key={h._id}
               onClick={() => handleSelect(h._id)}
               className={`
                 w-full text-left px-(--space-3) py-(--space-2) rounded-(--space-2) transition-all
-                ${state.activeHouseholdId === h._id
+                ${householdState.activeHouseholdId === h._id
                   ? "bg-(--brand) text-white shadow-lg shadow-(--brand)/20"
                   : "text-(--text-secondary) hover:bg-(--bg-primary) hover:text-(--text-primary)"}
               `}
@@ -75,9 +78,24 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
         <div className="bg-(--bg-primary) p-(--space-3) rounded-(--space-2)">
             <p className="text-(--text-secondary)">Active Workspace</p>
             <p className="text-(--text-sm) font-medium truncate">
-                {state.households.find((h: Household) => h._id === state.activeHouseholdId)?.name || "No Household"}
+                {householdState.households.find((h: Household) => h._id === householdState.activeHouseholdId)?.name || "No Household"}
             </p>
         </div>
+
+        {user && (
+          <Link 
+            to="/profile" 
+            className="flex items-center gap-3 p-2 hover:bg-(--bg-primary) rounded-lg transition-colors group"
+            onClick={onClose}
+          >
+            <div className="w-8 h-8 bg-(--brand) rounded-full flex items-center justify-center text-xs font-bold">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-sm font-medium text-(--text-secondary) group-hover:text-(--text-primary)">
+              My Account
+            </span>
+          </Link>
+        )}
       </div>
     </aside>
   );
