@@ -11,6 +11,7 @@ interface ButtonProps {
   onClick?:  () => void
   children:  React.ReactNode
   type?: "button" | "submit"
+  className?: string // Add className prop
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -33,14 +34,15 @@ export const Button = ({
   loading, 
   onClick, 
   children,
-  type = "button"
+  type = "button",
+  className = "" // Initialize className
 }: ButtonProps) => {
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`rounded-(--space-1) font-(--weight-medium) transition-all duration-(--duration-small) flex items-center justify-center gap-(--space-2) active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]}`}
+      className={`rounded-(--space-1) font-(--weight-medium) transition-all duration-(--duration-small) flex items-center justify-center gap-(--space-2) active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`} // Include className
     >
       {loading ? <span className="animate-pulse">...</span> : children}
     </button>
