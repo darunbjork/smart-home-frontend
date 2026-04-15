@@ -5,6 +5,7 @@ import { PublicRoute } from "./components/auth/PublicRoute";
 import { Dashboard } from "./pages/Dashboard";
 import { MainLayout } from "./components/layout/MainLayout";
 import { SettingsPage } from "./pages/SettingsPage";
+import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         
         <Route path="/register" element={
           <PublicRoute>
-            <div className="p-10 text-center">Register Page (TBD)</div>
+            <RegisterPage />
           </PublicRoute>
         } />
 
