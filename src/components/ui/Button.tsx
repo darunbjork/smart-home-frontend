@@ -11,7 +11,7 @@ interface ButtonProps {
   onClick?:  () => void
   children:  React.ReactNode
   type?: "button" | "submit"
-  className?: string // Add className prop
+  className?: string
 }
 
 const variantStyles: Record<ButtonVariant, string> = {

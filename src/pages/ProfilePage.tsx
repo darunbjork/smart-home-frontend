@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContextSetup";
 import { Button } from "../components/ui/Button";
 
 export const ProfilePage = () => {
-  const { state, logout } = useAuth(); // Use useAuth hook
+  const { state, logout } = useAuth();
   const user = state.user;
 
   if (!user) return null;
@@ -17,10 +17,10 @@ export const ProfilePage = () => {
       <div className="bg-(--bg-surface) border border-(--border) rounded-2xl overflow-hidden">
         <div className="p-8 border-b border-(--border) flex items-center gap-6">
           <div className="w-20 h-20 bg-(--brand) rounded-full flex items-center justify-center text-3xl font-bold">
-            {user.username.charAt(0).toUpperCase()} {/* Use user.username and capitalize */}
+            {user.username.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h2 className="text-2xl font-bold">{user.username}</h2> {/* Use user.username */}
+            <h2 className="text-2xl font-bold">{user.username}</h2>
             <p className="text-(--text-secondary)">{user.email}</p>
           </div>
         </div>
@@ -32,7 +32,6 @@ export const ProfilePage = () => {
               <p className="text-sm text-(--text-secondary)">Your permission level in the current workspace.</p>
             </div>
             <span className="px-3 py-1 bg-(--bg-primary) border border-(--border) rounded-full text-xs uppercase tracking-widest">
-              {/* Assuming user.role is available, if not, you might need a default */}
               {"Member"} 
             </span>
           </div>

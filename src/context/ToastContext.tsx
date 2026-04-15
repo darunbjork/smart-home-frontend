@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, type ReactNode, useCallback, useEffect } from "react";
-import { setToastFunction } from "../services/toast.service"; // Import setToastFunction
+import { setToastFunction } from "../services/toast.service";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
