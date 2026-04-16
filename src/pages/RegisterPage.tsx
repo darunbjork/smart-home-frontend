@@ -1,3 +1,4 @@
+// frontend-projects/smart-home-frontend/src/pages/RegisterPage.tsx
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -17,7 +18,6 @@ export const RegisterPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Assuming your auth context has a register method
       await auth.register(formData);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err: unknown) {
@@ -64,8 +64,7 @@ export const RegisterPage = () => {
               onChange={e => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
-
-          {/* Password Field */}
+          
           <div className="flex flex-col gap-(--space-2)">
             <label className="text-(--text-secondary)">Password</label>
             <input 

@@ -11,29 +11,39 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes: Only accessible if NOT logged in */}
-        <Route path="/login" element={
+        {/* Root path '/' now renders LoginPage for unauthenticated users via PublicRoute.
+            The LoginPage component itself should handle redirection to '/dashboard' if the user is already authenticated. */}
+        <Route path="/" element={
           <PublicRoute>
             <LoginPage />
           </PublicRoute>
         } />
         
+        {/* Login route remains public, could potentially redirect to '/' if desired, 
+            but serving LoginPage directly is also common. */}
+        <Route path="/login" element={
+          <PublicRoute>
+            <LoginPage /> 
+          </PublicRoute>
+        } />
+
+        {/* Register route remains public. The RegisterPage component should link to '/' for sign-in. */}
         <Route path="/register" element={
           <PublicRoute>
             <RegisterPage />
           </PublicRoute>
         } />
 
-        {/* Protected Routes: Only accessible if logged in */}
-        <Route path="/" element={
+        {/* Dashboard is now on a dedicated protected path */}
+        <Route path="/dashboard" element={
           <ProtectedRoute>
-            <MainLayout> {/* Wrap Dashboard with MainLayout */}
+            <MainLayout>
               <Dashboard />
             </MainLayout>
           </ProtectedRoute>
         } />
 
-        {/* Add the Settings page route */}
+        {/* Settings page remains protected */}
         <Route path="/settings" element={
           <ProtectedRoute>
             <MainLayout>
@@ -42,8 +52,12 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Catch-all: Redirect unknown paths to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Catch-all route:
+            Redirects unknown paths to the root ('/'), which is the LoginPage for unauthenticated users.
+            Authenticated users hitting '*' are expected to be handled by LoginPage's post-login redirect,
+            or by ProtectedRoute logic on target routes.
+        */}
+        <Route path="*" element={<Navigate to="/" replace />} /> 
       </Routes>
     </Router>
   );

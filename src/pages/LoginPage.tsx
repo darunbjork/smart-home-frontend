@@ -1,3 +1,4 @@
+//frontend-projects/smart-home-frontend/src/pages/LoginPage.tsx
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "../components/ui/Button";

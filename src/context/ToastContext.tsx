@@ -1,15 +1,11 @@
 import { createContext, useState, useContext, type ReactNode, useCallback, useEffect } from "react";
 import { setToastFunction } from "../services/toast.service";
-// Import types from ToastContextTypes.ts
-// Import types from ToastContextTypes.ts
 import type { ToastType, Toast } from "./ToastContextTypes";
 
-// Define the ToastContextValue interface matching the provider's value
 export interface ToastContextValue {
   showToast: (message: string, type?: ToastType) => void;
 }
 
-// Define and export the ToastContext object
 // eslint-disable-next-line react-refresh/only-export-components
 export const ToastContext = createContext<ToastContextValue | null>(null);
 
@@ -25,7 +21,6 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     }, 4000);
   }, []);
 
-  // Register showToast function globally for non-React modules
   useEffect(() => {
     setToastFunction(showToast);
   }, [showToast]);
@@ -33,7 +28,6 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Toast Portal - Fixed at bottom right */}
       <div className="fixed flex flex-col gap-3 pointer-events-none bottom-6 right-6 z-100">
         {toasts.map((toast) => (
           <div 

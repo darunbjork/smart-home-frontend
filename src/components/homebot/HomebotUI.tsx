@@ -5,42 +5,56 @@ import { aiService } from "../../services/ai.service";
 
 export const HomebotUI = () => {
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
   const { state, toggleDevice } = useDevices();
   const { showToast } = useToast();
 
-  const handleCommand = async (e: React.FormEvent) => {
+  const handleAISubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!input.trim() || isThinking) return;
+
+    setIsThinking(true);
     try {
-      const commands = await aiService.processCommand(input, state.devices);
-      for (const cmd of commands) {
-        const device = state.devices.find(d => d._id === cmd.id);
-        if (device && device.data.on !== (cmd.action === "on")) {
-          await toggleDevice(cmd.id, device.data.on);
+      const actions = await aiService.processCommand(input, state.devices);
+      
+      if (actions.length === 0) {
+        showToast("AI couldn't map that command to a device.", "info");
+      } else {
+        for (const action of actions) {
+          const device = state.devices.find(d => d._id === action.id);
+          // Only fire a request if the AI wants to change the state
+          if (device && (device.data.on !== (action.action === "on"))) {
+            // Use nullish coalescing operator to provide false if device.data.on is undefined
+            await toggleDevice(device._id, device.data.on ?? false); // ✅ fixed
+          }
         }
+        showToast(`AI executed ${actions.length} home commands.`, "success");
       }
-      showToast(`AI executed ${commands.length} actions`, "success");
       setInput("");
-    } catch (err) {
-      showToast("AI Command failed", "error");
+    } catch { // ✅ Ignored err variable for ESLint warning
+      showToast("AI Service Timeout. Check your Gemini Key.", "error");
     } finally {
-      setLoading(false);
+      setIsThinking(false);
     }
   };
 
   return (
-    <div className="bg-[var(--bg-surface)] border border-[var(--brand)]/20 p-4 rounded-2xl mb-8">
-      <form onSubmit={handleCommand} className="flex gap-4">
+    <div className="bg-(--bg-surface) border border-(--brand)/20 p-4 rounded-2xl shadow-lg mb-8 group focus-within:border-(--brand) transition-all">
+      <form onSubmit={handleAISubmit} className="flex items-center gap-4">
+        <div className={`w-3 h-3 rounded-full ${isThinking ? 'bg-(--brand) animate-pulse' : 'bg-(--text-secondary)'}`} />
         <input 
-          className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)]"
-          placeholder="Ask Homebot... (e.g. 'Goodnight' to turn off everything)"
+          className="flex-1 bg-transparent border-none outline-none text-(--text-primary) placeholder:text-(--text-secondary)"
+          placeholder="Ask Homebot... (e.g. 'Turn everything off and keep the fridge on')"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          disabled={isThinking}
         />
-        <button className="text-[var(--brand)] font-bold disabled:opacity-50" disabled={loading}>
-          {loading ? "..." : "Ask ✨"}
-        </button>
+        <button 
+          disabled={isThinking}
+          className="px-4 py-1 text-sm font-bold text-(--brand) hover:bg-(--brand)/10 rounded-lg disabled:opacity-30"
+        >
+          {isThinking ? "THINKING..." : "EXECUTE ✨"}
+        </button>d
       </form>
     </div>
   );

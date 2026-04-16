@@ -1,3 +1,4 @@
+// frontend-projects/smart-home-frontend/src/pages/Dashboard.tsx
 import { useState, useEffect } from "react"; 
 import { DeviceGrid } from "../components/devices/DeviceGrid"; 
 import { SceneCard } from "../components/scenes/SceneCard"; 

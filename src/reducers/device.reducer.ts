@@ -35,8 +35,7 @@ export function deviceReducer(state: DeviceState, action: DeviceAction): DeviceS
         devices: state.devices.filter((d) => d._id !== action.payload),
       };
     case "SET_LOADING": 
-      return { ...state, // Copy ALL existing fields (devices, error, etc.) Spread operator
-        isLoading: action.payload };
+      return { ...state, isLoading: action.payload };
     case "SET_ERROR":
       return { ...state, error: action.payload, isLoading: false };
     default:
