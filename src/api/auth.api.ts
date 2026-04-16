@@ -1,36 +1,30 @@
-import type { LoginDto, User } from "../types/auth.types";
+import { api } from "./axios";
+import type { LoginDto, RegisterDto, User } from "../types/auth.types";
 
-const authApi = {
+export const authApi = {
   login: async (dto: LoginDto): Promise<{ accessToken: string; user: User }> => {
-
-    await new Promise(resolve => setTimeout(resolve, 500));
-    // Return dummy data
+    const response = await api.post("/users/login", dto);
     return {
-      accessToken: "dummy-access-token",
-      user: {
-        id: "user-123",
-        username: "testuser",
-        email: dto.email,
-      },
+      accessToken: response.data.accessToken,
+      user: response.data.user,
     };
   },
+
+  register: async (dto: RegisterDto): Promise<void> => {
+    await api.post("/users/register", {
+      username: dto.username || dto.email.split("@")[0],
+      email: dto.email,
+      password: dto.password,
+      householdName: "My Home", 
+    });
+  },
+
   logout: async (): Promise<void> => {
-
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await api.post("/users/logout");
   },
-  register: async (): Promise<void> => {
 
-    await new Promise(resolve => setTimeout(resolve, 500));
-  },
   refresh: async (): Promise<{ accessToken: string }> => {
-
-    await new Promise(resolve => setTimeout(resolve, 500));
-    // In a real app, this would call a dedicated refresh endpoint
-    // and return a new access token.
-    // For simulation, let's return a new dummy token.
-    const newAccessToken = `refreshed-dummy-access-token-${Date.now()}`;
-    return { accessToken: newAccessToken };
+    const response = await api.get("/users/refresh");
+    return { accessToken: response.data.accessToken };
   },
 };
-
-export { authApi };
