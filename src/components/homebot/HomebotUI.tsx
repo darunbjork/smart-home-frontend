@@ -1,68 +1,45 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDevices } from "../../context/DeviceContext";
 import { useToast } from "../../hooks/useToast";
 import { aiService } from "../../services/ai.service";
 
 export const HomebotUI = () => {
   const [input, setInput] = useState("");
-  const [isThinking, setIsThinking] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
   const { state, toggleDevice } = useDevices();
   const { showToast } = useToast();
 
   const handleCommand = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isThinking) return;
-
-    setIsThinking(true);
+    setLoading(true);
     try {
       const commands = await aiService.processCommand(input, state.devices);
-      
-      if (commands.length === 0) {
-        showToast("I couldn't find any devices matching that command.", "info");
-      } else {
-        // Execute all LLM-generated commands
-        for (const cmd of commands) {
-          const device = state.devices.find(d => d._id === cmd.id);
-          if (device) {
-            // Only toggle if the target state is different from the current state
-            const isCurrentlyOn = Boolean(device.data.on);
-            const targetIsOn = cmd.action === "on";
-            
-            if (isCurrentlyOn !== targetIsOn) {
-               await toggleDevice(cmd.id, isCurrentlyOn); 
-            }
-          }
+      for (const cmd of commands) {
+        const device = state.devices.find(d => d._id === cmd.id);
+        if (device && device.data.on !== (cmd.action === "on")) {
+          await toggleDevice(cmd.id, device.data.on);
         }
-        showToast(`Executed ${commands.length} commands successfully!`, "success");
       }
+      showToast(`AI executed ${commands.length} actions`, "success");
       setInput("");
     } catch (err) {
-      showToast("The AI assistant encountered an error.", "error");
-      console.error(err);
+      showToast("AI Command failed", "error");
     } finally {
-      setIsThinking(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-(--bg-elevated) border border-(--brand)/30 p-4 rounded-xl shadow-inner mb-8 transition-all">
-      <form onSubmit={handleCommand} className="flex items-center gap-3">
-        <span className="text-xl">🤖</span>
+    <div className="bg-[var(--bg-surface)] border border-[var(--brand)]/20 p-4 rounded-2xl mb-8">
+      <form onSubmit={handleCommand} className="flex gap-4">
         <input 
-          type="text"
-          placeholder="Ask Homebot to control your devices... (e.g., 'Turn off the lights in the kitchen')"
-          className="flex-1 bg-transparent border-none outline-none text-(--text-primary) placeholder:text-(--text-secondary)"
+          className="flex-1 bg-transparent border-none outline-none text-[var(--text-primary)]"
+          placeholder="Ask Homebot... (e.g. 'Goodnight' to turn off everything)"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          disabled={isThinking}
         />
-        <button 
-          type="submit"
-          disabled={isThinking}
-          className="text-(--brand) font-bold hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
-        >
-          {isThinking ? "Processing..." : "Send"}
+        <button className="text-[var(--brand)] font-bold disabled:opacity-50" disabled={loading}>
+          {loading ? "..." : "Ask ✨"}
         </button>
       </form>
     </div>

@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { Device } from "../types/device.types";
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY || "");
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export interface AICommand {
@@ -11,34 +11,24 @@ export interface AICommand {
 
 export const aiService = {
   processCommand: async (userPrompt: string, devices: Device[]): Promise<AICommand[]> => {
-    const simplifiedContext = devices.map(d => ({
-      id: d._id,
-      name: d.name,
-      type: d.type,
-      currentState: d.data.on ? "on" : "off"
-    }));
-
+    const context = devices.map(d => ({ id: d._id, name: d.name, status: d.data.on ? 'on' : 'off' }));
+    
     const systemPrompt = `
-      You are a Smart Home Assistant. You have access to these devices: ${JSON.stringify(simplifiedContext)}.
-      The user will give you a command. 
-      Return ONLY a JSON array of objects with the format: {"id": "device_id", "action": "on" | "off"}.
-      If the command is unclear or no devices match, return an empty array [].
-      Do not explain anything. Just return the JSON array.
+      Context: ${JSON.stringify(context)}
+      User Command: "${userPrompt}"
+      Task: Return a JSON array of actions. 
+      Format: [{"id": "device_id", "action": "on" | "off"}]
+      Only return the JSON array. No text.
     `;
 
+    const result = await model.generateContent(systemPrompt);
+    const text = result.response.text();
+    
     try {
-      const result = await model.generateContent([systemPrompt, userPrompt]);
-      const response = await result.response;
-      const text = response.text();
-      
-      // Extract JSON if Gemini wraps it in markdown code blocks
-      const jsonMatch = text.match(/\[.*\]/s);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]) as AICommand[];
-      }
-      return [];
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      return JSON.parse(cleaned) as AICommand[];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
-      console.error("AI Parse Error:", e);
       return [];
     }
   }
