@@ -1,19 +1,17 @@
 import { createContext, useState, useContext, type ReactNode, useCallback, useEffect } from "react";
 import { setToastFunction } from "../services/toast.service";
+// Import types from ToastContextTypes.ts
+// Import types from ToastContextTypes.ts
+import type { ToastType, Toast } from "./ToastContextTypes";
 
-export type ToastType = "success" | "error" | "info" | "warning";
-
-interface Toast {
-  id: string;
-  message: string;
-  type: ToastType;
-}
-
+// Define the ToastContextValue interface matching the provider's value
 export interface ToastContextValue {
   showToast: (message: string, type?: ToastType) => void;
 }
 
-const ToastContext = createContext<ToastContextValue | null>(null);
+// Define and export the ToastContext object
+// eslint-disable-next-line react-refresh/only-export-components
+export const ToastContext = createContext<ToastContextValue | null>(null);
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -60,6 +58,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Export the useToast hook
 // eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => {
   const context = useContext(ToastContext);

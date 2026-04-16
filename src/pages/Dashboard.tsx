@@ -7,6 +7,8 @@ import { useHouseholds } from "../context/HouseholdContextSetup";
 import { Button } from "../components/ui/Button";
 import { EnergyChart } from "../components/analytics/EnergyChart";
 import { ErrorBoundary } from "../components/auth/ErrorBoundary";
+import { HomebotUI } from "../components/homebot/HomebotUI";
+
 
 export const Dashboard = () => {
   const [scenes, setScenes] = useState<Scene[]>([]);
@@ -22,6 +24,9 @@ export const Dashboard = () => {
 
   return (
     <div className="flex flex-col gap-10 mx-auto max-w-7xl">
+      <section>
+        <HomebotUI />
+      </section>
       {scenes.length > 0 && (
         <section className="animate-fade-in">
           <h2 className="text-sm font-bold uppercase tracking-widest text-(--text-secondary) mb-4">
@@ -35,7 +40,6 @@ export const Dashboard = () => {
         </section>
       )}
 
-      {/* New Analytics Section */}
       <ErrorBoundary>
         <section>
           <EnergyChart />

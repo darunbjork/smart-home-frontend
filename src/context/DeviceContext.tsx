@@ -4,7 +4,7 @@ import { deviceApi } from "../api/device.api";
 import { useHouseholds } from "./HouseholdContext";
 import { useToast } from "./ToastContext";
 import { io, Socket } from "socket.io-client";
-
+  import { useContext } from "react";
 interface DeviceContextValue {
   state: DeviceState;
   toggleDevice: (id: string, currentState: boolean) => Promise<void>;
@@ -64,6 +64,7 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
         "info"
       );
     });
+    
 
     return () => {
       socket.disconnect();
@@ -79,4 +80,15 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </DeviceContext.Provider>
   );
-};
+  };
+
+
+
+  // eslint-disable-next-line react-refresh/only-export-components
+  export const useDevices = () => {
+  const context = useContext(DeviceContext);
+  if (!context) {
+    throw new Error("useDevices must be used within a DeviceProvider");
+  }
+  return context;
+  };
