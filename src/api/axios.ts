@@ -19,8 +19,14 @@ export const api = axios.create({
 // * Automatically attach the token to every request
 api.interceptors.request.use((config) => {
   const token = tokenUtils.get();
-  if (token && config.headers) {
+  console.log("🔍 Interceptor running for:", config.url); 
+  console.log("📦 Token from localStorage:", token); 
+  if (token) {
+    config.headers = config.headers || {}; // ! Ensure headers object exists
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("✅ Header set:", config.headers.Authorization); 
+  } else {
+    console.warn("⚠️ No token or headers missing");
   }
   return config;
 });
