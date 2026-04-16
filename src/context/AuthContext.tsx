@@ -1,52 +1,59 @@
-import { useReducer, type ReactNode } from "react";
+import { useReducer, type ReactNode, useEffect } from "react";
 import { authApi } from "../api/auth.api";
 import { tokenUtils } from "../utils/token";
 import { AuthContext, type AuthContextValue, initialState } from "./AuthContextSetup";
 import { authReducer } from "../reducers/auth.reducer";
 import type { LoginDto, RegisterDto } from "../types/auth.types";
+import { useNavigate } from "react-router-dom";
 
+export { AuthContext };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const navigate = useNavigate();
+
+  // Restore session from localStorage
+  useEffect(() => {
+    const restoreSession = async () => {
+      const token = tokenUtils.getToken();
+      const user = tokenUtils.getUser();
+      if (token && user) {
+        dispatch({ type: "LOGIN_SUCCESS", payload: { user, accessToken: token } });
+      } else {
+        dispatch({ type: "SET_LOADING", payload: false });
+      }
+    };
+    restoreSession();
+  }, [dispatch, navigate]); // Added navigate as dependency, though might not be strictly needed if only used in login/logout
 
   const login = async (dto: LoginDto): Promise<void> => {
-    // 1. Call the API
+    // Assuming authApi.login handles API call and returns { accessToken, user }
     const { accessToken, user } = await authApi.login(dto);
-    
-    // 2. THE NAIVE WAY (Don't do this):
-    // dispatch({ type: "LOGIN_SUCCESS", payload: { user, accessToken } })
-    // If we only update React state, hitting F5 (refresh) wipes the memory. You are logged out immediately.
-
-    // 3. THE FIXED WAY (Step 5):
-    tokenUtils.set(accessToken); // Persist across refreshes
+    tokenUtils.setToken(accessToken);
+    tokenUtils.setUser(user); // Use setUser
     dispatch({ type: "LOGIN_SUCCESS", payload: { user, accessToken } });
+    navigate('/dashboard');
   };
 
   const register = async (dto: RegisterDto): Promise<void> => {
+    // Assuming authApi.register handles API call and throws on error
     await authApi.register(dto);
-    // After registration, we automatically log them in
+    // After registration, automatically log them in
     await login({ email: dto.email, password: dto.password });
   };
 
   const logout = async (): Promise<void> => {
     try {
       await authApi.logout(); // Tells the backend to clear the HttpOnly refresh cookie
-    } catch (error: unknown) {
+    } catch (error) { // Simplified error handling as per instructions
       console.error("Logout failed on server, clearing local state anyway.", error);
+      // Even if server logout fails, clear local state.
     } finally {
-      tokenUtils.clear();     // Wipe local access token
-      dispatch({ type: "LOGOUT" });
+      tokenUtils.clear(); // Clears both token and user
+      dispatch({ type: "LOGOUT" }); // Update React state
     }
   };
 
-  // Type assertion needed because AuthContext can be null initially
   const contextValue: AuthContextValue = { state, dispatch, login, logout, register };
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
-export { AuthContext };
-

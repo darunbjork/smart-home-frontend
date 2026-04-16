@@ -7,9 +7,8 @@ export const PublicRoute = ({ children }: { children: ReactNode }) => {
 
   if (!auth) return null;
 
-  // If already logged in, skip the login/register page and go home
   if (auth.state.user && !auth.state.isLoading) {
-    return <Navigate to="/" replace />;
+     return <Navigate to="/dashboard" replace />; 
   }
 
   return <>{children}</>;
