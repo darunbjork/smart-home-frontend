@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     restoreSession();
-  }, [dispatch, navigate]); // Added navigate as dependency, though might not be strictly needed if only used in login/logout
+  }, [dispatch, navigate]);
 
   const login = async (dto: LoginDto): Promise<void> => {
     // Assuming authApi.login handles API call and returns { accessToken, user }

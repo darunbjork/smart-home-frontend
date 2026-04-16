@@ -8,16 +8,20 @@ import { HouseholdProvider } from './context/HouseholdContext.tsx'
 import { DeviceProvider } from './context/DeviceContext.tsx';
 import { ToastProvider } from './context/ToastContext.tsx';
 
+import { BrowserRouter as Router } from "react-router-dom";
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <ToastProvider>
-        <HouseholdProvider>
-          <DeviceProvider>
-            <App />
-          </DeviceProvider>
-        </HouseholdProvider>
-      </ToastProvider>
-    </AuthProvider>
+    <Router> 
+      <AuthProvider> 
+        <ToastProvider>
+          <HouseholdProvider>
+            <DeviceProvider>
+              <App />
+            </DeviceProvider>
+          </HouseholdProvider>
+        </ToastProvider>
+      </AuthProvider>
+    </Router>
   </React.StrictMode>,
 )
