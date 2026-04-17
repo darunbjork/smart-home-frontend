@@ -33,7 +33,7 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
       const data = await deviceApi.getByHousehold(activeId);
       dispatch({ type: "SET_DEVICES", payload: data });
     } catch (err) {
-      console.error("Failed to fetch devices:", err); 
+      console.error("Failed to fetch devices:", err);
     }
   }, [activeId]);
 
@@ -54,11 +54,11 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
         },
       };
 
-      dispatch({ 
-        type: "UPDATE_DEVICE", 
-        payload: updatedDevice 
-      }); 
-      
+      dispatch({
+        type: "UPDATE_DEVICE",
+        payload: updatedDevice,
+      });
+
       await deviceApi.updateData(id, { on: !currentState });
     } catch (err) {
       console.error("Failed to toggle device", err);
@@ -77,8 +77,8 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
       showToast(`${updatedDevice.name} updated`, "info");
     });
     
-    return () => { 
-      socket.disconnect(); 
+    return () => {
+      socket.disconnect();
     };
   }, [activeId, showToast]);
 

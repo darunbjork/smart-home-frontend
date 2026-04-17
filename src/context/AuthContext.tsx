@@ -34,9 +34,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate('/dashboard');
   };
 
-  const register = async (dto: RegisterDto): Promise<void> => {
+  const register = async (dto: RegisterDto) => {
     await authApi.register(dto);
-    navigate('/login');
+    await login({ email: dto.email, password: dto.password });
   };
 
   const logout = async (): Promise<void> => {
