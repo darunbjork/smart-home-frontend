@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 
   // 1. Still verifying the session? Show nothing (or a skeleton)
   if (auth.state.isLoading) {
-    return <div className="min-h-screen bg-[var(--bg-primary)] animate-pulse" />;
+    return <div className="min-h-screen bg-(--bg-primary) animate-pulse" />;
   }
 
   // 2. Not logged in? Redirect to login but save the current location

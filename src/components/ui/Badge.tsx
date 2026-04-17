@@ -20,7 +20,7 @@ export const Badge = ({ value }: BadgeProps) => {
   const style = badgeStyles[value];
   return (
     <span 
-      className="px-[var(--space-2)] py-[var(--space-1)] rounded-[var(--space-1)] text-[var(--text-sm)] font-[var(--weight-medium)]"
+      className="px-(--space-2) py-(--space-1) rounded-(--space-1) text-(--text-sm) font-(--weight-medium)"
       style={{ backgroundColor: style.bg, color: style.text }}
     >
       {value.toUpperCase()}

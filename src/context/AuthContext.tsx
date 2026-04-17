@@ -27,30 +27,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [dispatch, navigate]);
 
   const login = async (dto: LoginDto): Promise<void> => {
-    // Assuming authApi.login handles API call and returns { accessToken, user }
     const { accessToken, user } = await authApi.login(dto);
     tokenUtils.setToken(accessToken);
-    tokenUtils.setUser(user); // Use setUser
+    tokenUtils.setUser(user);
     dispatch({ type: "LOGIN_SUCCESS", payload: { user, accessToken } });
     navigate('/dashboard');
   };
 
   const register = async (dto: RegisterDto): Promise<void> => {
-    // Assuming authApi.register handles API call and throws on error
     await authApi.register(dto);
-    // After registration, automatically log them in
-    await login({ email: dto.email, password: dto.password });
+    navigate('/login');
   };
 
   const logout = async (): Promise<void> => {
     try {
-      await authApi.logout(); // Tells the backend to clear the HttpOnly refresh cookie
-    } catch (error) { // Simplified error handling as per instructions
+      await authApi.logout();
+    } catch (error) { 
       console.error("Logout failed on server, clearing local state anyway.", error);
-      // Even if server logout fails, clear local state.
     } finally {
-      tokenUtils.clear(); // Clears both token and user
-      dispatch({ type: "LOGOUT" }); // Update React state
+      tokenUtils.clear();
+      dispatch({ type: "LOGOUT" });
     }
   };
 

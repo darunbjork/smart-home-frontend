@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContextSetup";
 
 export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { state: householdState, setActive, createHousehold } = useHouseholds();
-  const { state: authState } = useAuth();
+  const { state: authState, logout } = useAuth();
   const user = authState.user;
   const location = useLocation();
 
@@ -96,6 +96,15 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
             </span>
           </Link>
         )}
+         <button
+      onClick={async () => {
+         await logout();
+       window.location.href = "/login";
+        }}
+        className="mt-4 text-sm text-red-400 hover:text-red-300"
+    >
+        Logout
+      </button>
       </div>
     </aside>
   );

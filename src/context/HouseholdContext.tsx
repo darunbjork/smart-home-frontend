@@ -2,6 +2,7 @@ import { useReducer, type ReactNode, useContext, useEffect } from "react";
 import { HouseholdContext, type HouseholdContextValue } from "./HouseholdContextSetup"; 
 import { householdReducer } from "../reducers/household.reducer";
 import { householdApi } from "../api/household.api";
+import { tokenUtils } from "@src/utils/token";
 
 
 export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
@@ -51,7 +52,10 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchHouseholds();
+    const token = tokenUtils.getToken();
+    if (token) {
+      fetchHouseholds();
+    }
   }, []);
 
   return (

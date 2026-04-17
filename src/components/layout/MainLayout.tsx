@@ -14,7 +14,6 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
         />
       )}
 
-      {/* Sidebar with Responsive Classes */}
       <div className={`
         fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
@@ -23,7 +22,7 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
       </div>
 
       <main className="flex flex-col flex-1 min-w-0">
-        {/* Mobile Header */}
+ 
         <header className="lg:hidden flex items-center justify-between p-4 border-b border-(--border) bg-(--bg-surface)">
           <h2 className="text-lg font-bold text-(--brand)">SmartHome</h2>
           <button 

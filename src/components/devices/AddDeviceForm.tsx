@@ -21,6 +21,10 @@ export const AddDeviceForm = ({ onSuccess }: { onSuccess: () => void }) => {
         name: formData.name,
         type: formData.type,
         household: hState.activeHouseholdId,
+        status: "online",
+        owner: "",
+        createdAt: "",
+        updatedAt: ""
       });
       await refreshDevices();
       onSuccess();

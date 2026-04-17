@@ -1,4 +1,3 @@
-// frontend-projects/smart-home-frontend/src/pages/RegisterPage.tsx
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -52,7 +51,6 @@ export const RegisterPage = () => {
             />
           </div>
 
-          {/* Email Field */}
           <div className="flex flex-col gap-(--space-2)">
             <label className="text-(--text-secondary)">Email</label>
             <input 

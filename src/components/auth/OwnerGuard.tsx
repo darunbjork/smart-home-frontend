@@ -11,7 +11,7 @@ export const OwnerGuard = ({ children, fallback = null }: OwnerGuardProps) => {
   const auth = useContext(AuthContext);
   const { state } = useHouseholds();
 
-  if (!auth?.state.user || !state.activeHouseholdId) return fallback;
+  if (!auth?.state.user || !state.activeHouseholdId) return fallback; // ? If the user is not logged in OR there is no active household selected, stop here and return the fallback value.
 
   // Find the full object for the currently active household
   const activeHousehold = state.households.find(

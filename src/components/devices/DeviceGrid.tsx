@@ -39,8 +39,6 @@ export const DeviceGrid = ({ onAddClick }: DeviceGridProps) => {
     );
   }
 
-  // 2. Initial Empty State (No devices at all)
-  // This condition should check 'devices' before any filtering has occurred
   if (devices.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-(--space-16) border-2 border-dashed border-(--border) rounded-(--space-4) text-center bg-(--bg-surface)/50">

@@ -8,7 +8,8 @@ interface LightControlProps {
 
 export const LightControl = ({ device, onToggle }: LightControlProps) => {
   // Ensure device.data exists and has an 'on' property, default to false if not
-  const isOn = !!device?.data?.on; 
+  const isOn = !!device?.data?.on; // ! double‑bang (!!) operator.  
+  // * !! converts any value into a strict boolean (true or false).
 
   return (
     <div className="flex items-center justify-between bg-(--bg-primary) p-(--space-2) rounded-(--space-2)">

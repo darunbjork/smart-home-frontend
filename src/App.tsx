@@ -10,30 +10,24 @@ import { RegisterPage } from "./pages/RegisterPage";
 function App() {
   return (
     <Routes>
-      {/* Root path '/' now renders LoginPage for unauthenticated users via PublicRoute.
-          The LoginPage component itself should handle redirection to '/dashboard' if the user is already authenticated. */}
       <Route path="/" element={
         <PublicRoute>
           <LoginPage />
         </PublicRoute>
       } />
       
-      {/* Login route remains public, could potentially redirect to '/' if desired, 
-          but serving LoginPage directly is also common. */}
       <Route path="/login" element={
         <PublicRoute>
           <LoginPage /> 
         </PublicRoute>
       } />
 
-      {/* Register route remains public. The RegisterPage component should link to '/' for sign-in. */}
       <Route path="/register" element={
         <PublicRoute>
           <RegisterPage />
         </PublicRoute>
       } />
 
-      {/* Dashboard is now on a dedicated protected path */}
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <MainLayout>
@@ -42,7 +36,6 @@ function App() {
         </ProtectedRoute>
       } />
 
-      {/* Settings page remains protected */}
       <Route path="/settings" element={
         <ProtectedRoute>
           <MainLayout>

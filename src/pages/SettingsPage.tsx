@@ -20,8 +20,7 @@ export const SettingsPage = () => {
         <h1 className="text-(--text-4xl) font-(--weight-bold)">Workspace Settings</h1>
         <p className="text-(--text-secondary)">Manage your household, members, and permissions.</p>
       </header>
-
-      {/* Member Management Section */}
+      
       <section>
         <MemberManager />
       </section>

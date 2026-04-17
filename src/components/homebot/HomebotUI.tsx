@@ -25,7 +25,7 @@ export const HomebotUI = () => {
           // Only fire a request if the AI wants to change the state
           if (device && (device.data.on !== (action.action === "on"))) {
             // Use nullish coalescing operator to provide false if device.data.on is undefined
-            await toggleDevice(device._id, device.data.on ?? false); // ✅ fixed
+            await toggleDevice(device._id, device.data.on ?? false);
           }
         }
         showToast(`AI executed ${actions.length} home commands.`, "success");

@@ -1,5 +1,3 @@
-import { type ReactNode } from "react";
-
 export type ToastType = "success" | "error" | "info" | "warning";
 
 export interface Toast {

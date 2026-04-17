@@ -11,14 +11,15 @@ export const authApi = {
   },
 
   register: async (dto: RegisterDto): Promise<void> => {
+    const baseUsername = dto.username || dto.email.split("@")[0];
+    const uniqueUsername = `${baseUsername}_${Math.floor(Math.random() * 10000)}`;
     await api.post("/users/register", {
-      username: dto.username || dto.email.split("@")[0],
+      username: uniqueUsername,
       email: dto.email,
       password: dto.password,
-      householdName: "My Home", 
+      householdName: "My Home",
     });
   },
-
   logout: async (): Promise<void> => {
     await api.post("/users/logout");
   },
