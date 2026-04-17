@@ -6,7 +6,7 @@ export const deviceApi = {
     api.get(`/devices/household/${householdId}`).then(r => r.data.devices),
 
   updateData: (id: string, data: Partial<Device["data"]>): Promise<void> =>
-    api.put(`/devices/${id}`, data).then(r => r.data),
+    api.patch(`/devices/${id}`, data).then(r => r.data),
 
   create: (device: Omit<Device, "_id" | "data"> & { data?: Partial<Device["data"]> }): Promise<Device> =>
     api.post('/devices', device).then(r => r.data),

@@ -9,7 +9,7 @@ export const householdApi = {
     api.post("/households", { name }).then(r => r.data),
 
   update: (id: string, updates: Partial<{name: string}>): Promise<void> =>
-    api.put(`/households/${id}`, updates).then(r => r.data),
+    api.patch(`/households/${id}`, updates).then(r => r.data),
 
   remove: (id: string): Promise<void> =>
     api.delete(`/households/${id}`).then(r => r.data),
