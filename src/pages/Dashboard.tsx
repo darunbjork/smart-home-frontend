@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"; 
 import { AddDeviceForm } from "../components/devices/AddDeviceForm";
+import { DeviceGrid } from "../components/devices/DeviceGrid"; 
 import { SceneCard } from "../components/scenes/SceneCard"; 
 import { sceneApi } from "../api/scene.api"; 
 import type { Scene } from "../types/scene.types"; 
@@ -8,7 +9,7 @@ import { Button } from "../components/ui/Button";
 import { EnergyChart } from "../components/analytics/EnergyChart";
 import { ErrorBoundary } from "../components/auth/ErrorBoundary";
 import { HomebotUI } from "../components/homebot/HomebotUI";
-
+import { InvitationList } from "../components/households/InvitationList"; // Import InvitationList
 
 export const Dashboard = () => {
   const [scenes, setScenes] = useState<Scene[]>([]);
@@ -24,6 +25,10 @@ export const Dashboard = () => {
 
   return (
     <div className="flex flex-col gap-10 mx-auto max-w-7xl">
+      
+      {/* Display InvitationList at the top if there are pending invites */}
+      <InvitationList />
+
       <section>
         <HomebotUI />
       </section>
@@ -58,7 +63,7 @@ export const Dashboard = () => {
                + Add Device
              </Button>
           </header>
-
+          <DeviceGrid />
         </section>
       </ErrorBoundary>
       
@@ -76,7 +81,6 @@ export const Dashboard = () => {
               </button>
             </header>
 
-            {/* THE REAL FORM: Passes the close function to onSuccess */}
             <AddDeviceForm onSuccess={() => setIsAddModalOpen(false)} />
             
             <div className="mt-6 pt-6 border-t border-(--border)">

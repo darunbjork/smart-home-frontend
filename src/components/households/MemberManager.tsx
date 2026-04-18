@@ -1,71 +1,62 @@
-import { useState, useEffect, useCallback } from "react";
-import { memberApi, type Member } from "../../api/member.api";
-import { useHouseholds } from "../../context/HouseholdContext";
-import { OwnerGuard } from "../auth/OwnerGuard";
+import { useState } from "react";
+import { useHouseholds } from "../../context/HouseholdContextSetup";
+import { invitationApi } from "../../api/invitation.api";
 import { Button } from "../ui/Button";
 
 export const MemberManager = () => {
   const { state } = useHouseholds();
-  const [members, setMembers] = useState<Member[]>([]);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const fetchMembers = useCallback(async () => {
-    if (!state.activeHouseholdId) return;
-    const data = await memberApi.getMembers(state.activeHouseholdId);
-    setMembers(data);
-  }, [state.activeHouseholdId]);
-
-  useEffect(() => { fetchMembers(); }, [state.activeHouseholdId, fetchMembers]);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!state.activeHouseholdId) return;
+    if (!state.activeHouseholdId || !email.trim()) return;
+
     setLoading(true);
+    setMessage(null);
     try {
-      await memberApi.inviteMember(state.activeHouseholdId, email);
+      await invitationApi.send({
+        householdId: state.activeHouseholdId,
+        inviteeEmail: email.trim()
+      });
+      setMessage({ type: 'success', text: `Invitation sent to ${email}` });
       setEmail("");
-      fetchMembers();
+    } catch (err) {
+      setMessage({ type: 'error', text: "Failed to send invitation. They might already be invited." });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 bg-(--bg-surface) p-6 rounded-xl border border-(--border)">
-      <header className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">Household Members</h2>
-        <OwnerGuard>
-          <form onSubmit={handleInvite} className="flex gap-2">
-            <input 
-              type="email" 
-              placeholder="Email address..."
-              className="bg-(--bg-primary) border border-(--border) rounded-lg px-3 py-1 text-sm outline-none focus:border-(--brand)"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-            <Button size="sm" loading={loading}>Invite</Button>
-          </form>
-        </OwnerGuard>
+    <div className="bg-(--bg-surface) border border-(--border) rounded-2xl p-8">
+      <header className="mb-6">
+        <h3 className="text-xl font-bold text-(--text-primary)">Household Members</h3>
+        <p className="text-sm text-(--text-secondary)">Invite others to control your smart home.</p>
       </header>
 
-      <div className="divide-y divide-(--border)">
-        {members.map(m => (
-          <div key={m._id} className="flex items-center justify-between py-3">
-            <div>
-              <p className="font-medium">{m.email}</p>
-              <p className="text-xs text-(--text-secondary) uppercase">{m.role}</p>
-            </div>
-            {/* Owners see a delete button for anyone who isn't them */}
-            <OwnerGuard>
-              {m.role !== "owner" && (
-                <button className="text-(--error) text-sm hover:underline">Remove</button>
-              )}
-            </OwnerGuard>
-          </div>
-        ))}
-      </div>
+      <form onSubmit={handleInvite} className="flex flex-col sm:flex-row gap-3 mb-6">
+        <input 
+          type="email"
+          required
+          placeholder="colleague@example.com"
+          className="flex-1 bg-(--bg-primary) border border-(--border) rounded-xl px-4 py-2 text-(--text-primary) outline-none focus:border-(--brand) transition-all"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button variant="primary" type="submit" loading={loading}>
+          Send Invite
+        </Button>
+      </form>
+
+      {message && (
+        <p className={`text-sm mb-4 font-medium ${message.type === 'success' ? 'text-(--brand)' : 'text-(--error)'}`}>
+          {message.text}
+        </p>
+      )}
+
+      {/* List of current members would go here, mapped from state.households */}
     </div>
   );
 };
