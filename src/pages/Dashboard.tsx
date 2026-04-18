@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"; 
 import { AddDeviceForm } from "../components/devices/AddDeviceForm";
-import { DeviceGrid } from "../components/devices/DeviceGrid"; 
 import { SceneCard } from "../components/scenes/SceneCard"; 
 import { sceneApi } from "../api/scene.api"; 
 import type { Scene } from "../types/scene.types"; 
@@ -59,7 +58,7 @@ export const Dashboard = () => {
                + Add Device
              </Button>
           </header>
-          <DeviceGrid onAddClick={() => setIsAddModalOpen(true)} />
+
         </section>
       </ErrorBoundary>
       

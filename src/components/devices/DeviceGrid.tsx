@@ -1,82 +1,73 @@
-import { useContext, useState, useMemo } from "react";
-import { DeviceContext } from "../../context/DeviceContext";
-import { DeviceCard } from "./DeviceCard";
-import { Button } from "../ui/Button";
-import { DeviceFilters } from "./DeviceFilters";
+import { useEffect, useState } from "react";
+import { useHouseholds } from "../../context/HouseholdContextSetup";
+import { deviceApi } from "../../api/device.api";
+import { type Device } from "../../types/device.types";
 
-interface DeviceGridProps {
-  onAddClick: () => void;
-}
+export const DeviceGrid = () => {
+  const { state } = useHouseholds();
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export const DeviceGrid = ({ onAddClick }: DeviceGridProps) => {
-  const deviceCtx = useContext(DeviceContext);
-  const [filters, setFilters] = useState({ search: "", type: "all" });
-  
-  const { devices = [], isLoading = false } = deviceCtx?.state || {};
+  useEffect(() => {
+    if (state.activeHouseholdId) {
+      deviceApi.getByHousehold(state.activeHouseholdId).then((data) => {
+        setDevices(data);
+        setLoading(false);
+      });
+    }
+  }, [state.activeHouseholdId]);
 
-  const filteredDevices = useMemo(() => {
-    return devices.filter((device) => {
-      const matchesSearch = device.name.toLowerCase().includes(filters.search.toLowerCase());
-      const matchesType = filters.type === "all" || device.type.toLowerCase() === filters.type;
-      return matchesSearch && matchesType;
-    });
-  }, [devices, filters]);
-
-  if (!deviceCtx) {
-    return null; // Or some fallback UI
-  }
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-(--space-6)">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="h-40 bg-(--bg-surface) border border-(--border) rounded-(--space-3) animate-pulse"
-          />
-        ))}
-      </div>
+  const handleToggle = async (deviceId: string, currentState: boolean) => {
+    // Optimistic UI Update
+    setDevices((prev) =>
+      prev.map((d) => (d._id === deviceId ? { ...d, data: { ...d.data, on: !currentState } } : d))
     );
-  }
 
-  if (devices.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-(--space-16) border-2 border-dashed border-(--border) rounded-(--space-4) text-center bg-(--bg-surface)/50">
-        <div className="w-16 h-16 bg-(--bg-primary) rounded-full flex items-center justify-center mb-4 border border-(--border)">
-           <span className="text-2xl text-(--text-secondary)">🔌</span>
-        </div>
-        <h3 className="text-(--text-xl) font-(--weight-bold) mb-2">No devices found</h3>
-        <p className="text-(--text-secondary) mb-6 max-w-xs mx-auto">
-          Your home is a bit quiet. Connect your first smart light or sensor to get started.
-        </p>
-        <Button variant="secondary" onClick={onAddClick}>
-          Connect Your First Device
-        </Button>
-      </div>
-    );
-  }
+    try {
+      await deviceApi.updateData(deviceId, { on: !currentState });
+    } catch (error) {
+      // Revert on failure
+      console.error("Toggle failed", error);
+      const original = await deviceApi.getByHousehold(state.activeHouseholdId!);
+      setDevices(original);
+    }
+  };
+
+  if (loading) return <div className="grid grid-cols-1 gap-6 md:grid-cols-3 animate-pulse">
+    {[1, 2, 3].map(i => <div key={i} className="h-32 bg-(--bg-surface) rounded-2xl border border-(--border)" />)}
+  </div>;
 
   return (
-    <div className="flex flex-col">
-      <DeviceFilters onFilterChange={setFilters} />
-
-      {filteredDevices.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed border-(--border) rounded-xl bg-(--bg-surface)/30">
-          <p className="text-(--text-secondary)">No devices match your search criteria.</p>
-          <button 
-            onClick={() => setFilters({ search: "", type: "all" })}
-            className="text-(--brand) text-sm mt-2 hover:underline"
-          >
-            Clear all filters
-          </button>
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {devices.map((device) => (
+        <div key={device._id} className="bg-(--bg-surface) border border-(--border) p-6 rounded-2xl flex items-center justify-between hover:border-(--brand)/50 transition-all group">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+              device.data.on ? 'bg-(--brand) text-white shadow-lg shadow-(--brand)/20' : 'bg-(--bg-primary) text-(--text-secondary)'
+            }`}>
+              {/* Simple Icon Logic */}
+              {device.type === 'light' ? '💡' : '🔌'}
+            </div>
+            <div>
+              <p className="font-bold text-(--text-primary)">{device.name}</p>
+              <p className="text-xs text-(--text-secondary) uppercase tracking-widest">{device.type}</p>
+            </div>
+          </div>
+          
+          {(device.type === 'light' || device.type === 'switch') && (
+            <button 
+              onClick={() => handleToggle(device._id, !!device.data.on)}
+              className={`w-12 h-6 rounded-full relative transition-colors ${
+                device.data.on ? 'bg-(--brand)' : 'bg-(--border)'
+              }`}
+            >
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
+                device.data.on ? 'left-7' : 'left-1'
+              }`} />
+            </button>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-(--space-6) animate-slide-up">
-          {filteredDevices.map((device) => (
-            <DeviceCard key={device._id} device={device} />
-          ))}
-        </div>
-      )}
+      ))}
     </div>
   );
 };
