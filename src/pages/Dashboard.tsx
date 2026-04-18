@@ -1,5 +1,5 @@
-// frontend-projects/smart-home-frontend/src/pages/Dashboard.tsx
 import { useState, useEffect } from "react"; 
+import { AddDeviceForm } from "../components/devices/AddDeviceForm";
 import { DeviceGrid } from "../components/devices/DeviceGrid"; 
 import { SceneCard } from "../components/scenes/SceneCard"; 
 import { sceneApi } from "../api/scene.api"; 
@@ -42,7 +42,7 @@ export const Dashboard = () => {
       )}
 
       <ErrorBoundary>
-        <section>
+        <section className="h-87.5 w-full">
           <EnergyChart />
         </section>
       </ErrorBoundary>
@@ -64,22 +64,34 @@ export const Dashboard = () => {
       </ErrorBoundary>
       
      {isAddModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="p-8 rounded-lg bg-(--bg-secondary) border border-(--border-color)">
-      <h2 className="mb-4 text-xl font-bold text-(--text-primary)">Add Device Modal</h2>
-      <p className="text-(--text-secondary)">Content for adding a new device goes here...</p>
-      <Button 
-        variant="secondary"
-        onClick={() => setIsAddModalOpen(false)}
-      >
-        Close
-      </Button>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="w-full max-w-md bg-(--bg-surface) border border-(--border) rounded-2xl shadow-2xl overflow-hidden animate-zoom-in">
+          <div className="p-8">
+            <header className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-(--text-primary)">New Device</h2>
+              <button 
+                onClick={() => setIsAddModalOpen(false)}
+                className="text-(--text-secondary) hover:text-(--text-primary) transition-colors"
+              >
+                ✕
+              </button>
+            </header>
 
-    </div>
-  </div>
-)}
+            {/* THE REAL FORM: Passes the close function to onSuccess */}
+            <AddDeviceForm onSuccess={() => setIsAddModalOpen(false)} />
+            
+            <div className="mt-6 pt-6 border-t border-(--border)">
+              <button 
+                className="w-full py-2 text-sm text-(--text-secondary) hover:text-(--text-primary) font-medium transition-colors"
+                onClick={() => setIsAddModalOpen(false)}
+              >
+                Cancel and Return
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 };
-
-

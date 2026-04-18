@@ -56,7 +56,7 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
 
       dispatch({
         type: "UPDATE_DEVICE",
-        payload: updatedDevice,
+        payload: updatedDevice, 
       });
 
       await deviceApi.updateData(id, { on: !currentState });

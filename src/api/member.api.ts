@@ -1,21 +1,17 @@
 import { api } from "./axios";
-import type { Member } from "../types/member.types"; // Make sure Member is importable from types
+import type { Member } from "../types/member.types";
 
 export const memberApi = {
-  // The backend returns members inside the household object
-  getMembers: async (householdId: string): Promise<Member[]> => { // Explicitly type return as Member[]
+  getMembers: async (householdId: string): Promise<Member[]> => { 
     const res = await api.get(`/households/${householdId}`);
-    // Backend returns { household: { members: [] } }
-    return res.data?.household?.members || []; // Added safe navigation and default
+    return res.data?.household?.members || []; 
   },
 
-  // Match the backend's expected body keys and flat URL
-  inviteMember: (householdId: string, email: string): Promise<Member> => // Explicitly type return as Member
+  inviteMember: (householdId: string, email: string): Promise<Member> => 
     api.post('/households/invite', {
       householdId,
-      inviteeEmail: email // Backend expects inviteeEmail, not just email
-    }).then(r => r.data), // Assuming backend returns the invited member on success
+      inviteeEmail: email 
+    }).then(r => r.data), 
 };
 
-// Explicitly export Member type from this module to resolve TS2305
 export type { Member };

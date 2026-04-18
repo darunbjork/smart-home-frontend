@@ -12,7 +12,7 @@ export const authApi = {
 
   register: async (dto: RegisterDto): Promise<void> => {
     const baseUsername = dto.username || dto.email.split("@")[0];
-    const uniqueUsername = `${baseUsername}_${Math.floor(Math.random() * 10000)}`;
+    const uniqueUsername = `${baseUsername}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
     await api.post("/users/register", {
       username: uniqueUsername,
       email: dto.email,
