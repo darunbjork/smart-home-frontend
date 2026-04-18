@@ -1,6 +1,6 @@
-import type { DeviceStatus } from "../../types/device.types";
 import type { UserRole } from "../../types/auth.types";
 
+type DeviceStatus = 'online' | 'offline' | 'unknown' | 'pending';
 type BadgeType = DeviceStatus | UserRole;
 
 interface BadgeProps {
