@@ -9,7 +9,7 @@ import { Button } from "../components/ui/Button";
 import { EnergyChart } from "../components/analytics/EnergyChart";
 import { ErrorBoundary } from "../components/auth/ErrorBoundary";
 import { HomebotUI } from "../components/homebot/HomebotUI";
-import { InvitationList } from "../components/households/InvitationList"; // Import InvitationList
+import { InvitationList } from "../components/households/InvitationList";
 
 export const Dashboard = () => {
   const [scenes, setScenes] = useState<Scene[]>([]);
@@ -51,10 +51,12 @@ export const Dashboard = () => {
         </section>
       </ErrorBoundary>
 
-      <ErrorBoundary>
         <section>
           <header className="flex items-end justify-between mb-8">
-             <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
+             <div>
+               <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
+               <p className="text-sm text-(--text-secondary)">Control and monitor your hardware.</p>
+             </div>
              <Button 
                variant="ghost" 
                onClick={() => setIsAddModalOpen(true)} 
@@ -63,9 +65,11 @@ export const Dashboard = () => {
                + Add Device
              </Button>
           </header>
-          <DeviceGrid />
+
+          <ErrorBoundary>
+            <DeviceGrid />
+          </ErrorBoundary>
         </section>
-      </ErrorBoundary>
       
      {isAddModalOpen && (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

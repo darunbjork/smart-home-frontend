@@ -13,11 +13,9 @@ const DeviceCardComponent = ({ device }: { device: Device }) => {
   }
 
   const renderControl = () => {
-    // Ensure device.data and device.data.on exist, default to false (off) if not
-    const isOn = device.data && device.data.on !== undefined ? !!device.data.on : false;
+    const isOn = !!device.data?.on;
     switch (device.type.toLowerCase()) {
       case "light":
-        // Pass the correct 'on' state to toggleDevice
         return <LightControl device={device} onToggle={() => deviceCtx.toggleDevice(device._id, isOn)} />;
       default:
         return <p className="text-(--text-muted) text-sm">No controls available</p>;
@@ -43,11 +41,8 @@ const DeviceCardComponent = ({ device }: { device: Device }) => {
   );
 };
 
-// Memoize the component with a custom comparison function
+
 export const DeviceCard = memo(DeviceCardComponent, (prevProps, nextProps) => {
-  // Only re-render if the device's status, data.on, or name has changed
-  // Using JSON.stringify for data comparison is simple but can be inefficient for large objects.
-  // For complex data structures, a deep comparison or more specific checks might be better.
   return (
     prevProps.device.status === nextProps.device.status &&
     JSON.stringify(prevProps.device.data) === JSON.stringify(nextProps.device.data) &&

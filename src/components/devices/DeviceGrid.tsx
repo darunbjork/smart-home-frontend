@@ -46,7 +46,7 @@ export const DeviceGrid = () => {
         <div key={device._id} className="bg-(--bg-surface) border border-(--border) p-6 rounded-2xl flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-              device.data.on ? 'bg-(--brand) text-white' : 'bg-(--bg-primary) text-(--text-secondary)'
+              device.data?.on ? 'bg-(--brand) text-white' : 'bg-(--bg-primary) text-(--text-secondary)'
             }`}>
               {device.type === 'light' ? '💡' : '🔌'}
             </div>
@@ -58,13 +58,13 @@ export const DeviceGrid = () => {
           
           {(device.type === 'light' || device.type === 'switch') && (
             <button 
-              onClick={() => handleToggle(device._id, !!device.data.on)}
+              onClick={() => handleToggle(device._id, !!device.data?.on)}
               className={`w-12 h-6 rounded-full relative transition-colors ${
-                device.data.on ? 'bg-(--brand)' : 'bg-(--border)'
+                device.data?.on ? 'bg-(--brand)' : 'bg-(--border)'
               }`}
             >
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                device.data.on ? 'left-7' : 'left-1'
+                device.data?.on ? 'left-7' : 'left-1'
               }`} />
             </button>
           )}
