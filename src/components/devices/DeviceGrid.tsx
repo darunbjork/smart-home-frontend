@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
 import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { deviceApi } from "../../api/device.api";
+import { useDeviceSocket } from "../../hooks/useDeviceSocket";
 import { type Device } from "../../types/device.types";
 
 export const DeviceGrid = () => {
   const { state } = useHouseholds();
   const [devices, setDevices] = useState<Device[]>([]);
-  const [loading, setLoading] = useState(true);
 
+  // 1. Initial Fetch
   useEffect(() => {
     if (state.activeHouseholdId) {
-      deviceApi.getByHousehold(state.activeHouseholdId).then((data) => {
-        setDevices(data);
-        setLoading(false);
-      });
+      deviceApi.getByHousehold(state.activeHouseholdId).then(setDevices);
     }
   }, [state.activeHouseholdId]);
 
+  // 2. Real-time Sync (Socket)
+  useDeviceSocket(state.activeHouseholdId ?? undefined, (updatedDevice) => {
+    setDevices((prev) => 
+      prev.map((d) => (d._id === updatedDevice._id ? updatedDevice : d))
+    );
+  });
+
   const handleToggle = async (deviceId: string, currentState: boolean) => {
-    // Optimistic UI Update
+    // 3. Optimistic UI: Update locally immediately
     setDevices((prev) =>
       prev.map((d) => (d._id === deviceId ? { ...d, data: { ...d.data, on: !currentState } } : d))
     );
@@ -26,26 +31,23 @@ export const DeviceGrid = () => {
     try {
       await deviceApi.updateData(deviceId, { on: !currentState });
     } catch (error) {
-      // Revert on failure
-      console.error("Toggle failed", error);
-      const original = await deviceApi.getByHousehold(state.activeHouseholdId!);
-      setDevices(original);
+      console.error("Toggle failed, reverting...", error);
+      // Re-fetch to sync with server state on error
+      if (state.activeHouseholdId) {
+        const fresh = await deviceApi.getByHousehold(state.activeHouseholdId);
+        setDevices(fresh);
+      }
     }
   };
-
-  if (loading) return <div className="grid grid-cols-1 gap-6 md:grid-cols-3 animate-pulse">
-    {[1, 2, 3].map(i => <div key={i} className="h-32 bg-(--bg-surface) rounded-2xl border border-(--border)" />)}
-  </div>;
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {devices.map((device) => (
-        <div key={device._id} className="bg-(--bg-surface) border border-(--border) p-6 rounded-2xl flex items-center justify-between hover:border-(--brand)/50 transition-all group">
+        <div key={device._id} className="bg-(--bg-surface) border border-(--border) p-6 rounded-2xl flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
-              device.data.on ? 'bg-(--brand) text-white shadow-lg shadow-(--brand)/20' : 'bg-(--bg-primary) text-(--text-secondary)'
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+              device.data.on ? 'bg-(--brand) text-white' : 'bg-(--bg-primary) text-(--text-secondary)'
             }`}>
-              {/* Simple Icon Logic */}
               {device.type === 'light' ? '💡' : '🔌'}
             </div>
             <div>

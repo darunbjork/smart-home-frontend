@@ -32,10 +32,9 @@ export const AddDeviceForm = ({ onSuccess }: AddDeviceFormProps) => {
       await deviceApi.create({
         name: formData.name,
         type: formData.type,
-        household: state.activeHouseholdId,
+        // FIXED: Property changed from household to householdId
+        householdId: state.activeHouseholdId, 
         data: formData.type === "light" || formData.type === "switch" ? { on: false } : {},
-        status: "online",
-        owner: ""
       });
       onSuccess();
     } catch (error) {
@@ -53,7 +52,7 @@ export const AddDeviceForm = ({ onSuccess }: AddDeviceFormProps) => {
           required
           type="text"
           placeholder="e.g. Living Room Lamp"
-          className="bg-(--bg-primary) border border-(--border) rounded-xl p-3 focus:border-(--brand) outline-none transition-all"
+          className="bg-(--bg-primary) border border-(--border) rounded-xl p-3 focus:border-(--brand) outline-none transition-all text-(--text-primary)"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
@@ -62,7 +61,7 @@ export const AddDeviceForm = ({ onSuccess }: AddDeviceFormProps) => {
       <div className="flex flex-col gap-2">
         <label className="text-sm font-bold text-(--text-secondary)">Device Type</label>
         <select
-          className="bg-(--bg-primary) border border-(--border) rounded-xl p-3 focus:border-(--brand) outline-none transition-all appearance-none"
+          className="bg-(--bg-primary) border border-(--border) rounded-xl p-3 focus:border-(--brand) outline-none transition-all appearance-none text-(--text-primary)"
           value={formData.type}
           onChange={(e) => setFormData({ ...formData, type: e.target.value as DeviceType })}
         >
