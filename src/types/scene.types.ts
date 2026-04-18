@@ -1,7 +1,8 @@
+import type { DeviceData } from "../types/device.types";
+
 export interface SceneAction {
   deviceId: string;
-  on: boolean;
-  brightness?: number;
+  data: Partial<DeviceData>;
 }
 
 export interface Scene {
