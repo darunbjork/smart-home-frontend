@@ -9,8 +9,18 @@ export const HomebotUI = () => {
   const { state, toggleDevice } = useDevices();
   const { showToast } = useToast();
 
-  const addSpacesToCommand = (cmd: string) => {
-    return cmd.replace(/(turn)(on|off)/gi, '$1 $2');
+  const normalizeCommand = (cmd: string) => {
+    let spaced = cmd.replace(/([a-z])([A-Z])/g, '$1 $2');
+    spaced = spaced.replace(/(turn)(on|off)/gi, '$1 $2');
+    
+    spaced = spaced.replace(/(livingroom)/gi, 'living room');
+    spaced = spaced.replace(/(bedroom)/gi, 'bedroom');
+    spaced = spaced.replace(/(kitchen)/gi, 'kitchen');
+    // -----------------------------------------
+
+    spaced = spaced.replace(/\b(the|in|my|all|light|lights)\b/gi, ' $1 ');
+    spaced = spaced.replace(/\s+/g, ' ').trim();
+    return spaced;
   };
 
   const handleAISubmit = async (e: React.FormEvent) => {
@@ -24,7 +34,7 @@ export const HomebotUI = () => {
 
     setIsThinking(true);
     try {
-      const processedPrompt = addSpacesToCommand(input);
+      const processedPrompt = normalizeCommand(input);
       const actions = await aiService.processCommand(processedPrompt, state.devices);
       
       if (actions.length === 0) {

@@ -38,10 +38,11 @@ export const DeviceProvider = ({ children }: { children: ReactNode }) => {
   }, [activeId]);
 
   const toggleDevice = async (id: string, currentState: boolean) => {
+    console.log(`toggleDevice called for \${id}, currentState: \${currentState}`); // Added log
     try {
       const deviceToUpdate = state.devices.find(d => d._id === id);
       if (!deviceToUpdate) {
-        console.error(`Device with id ${id} not found.`);
+        console.error(`Device with id \${id} not found.`);
         showToast("Device not found", "error");
         return;
       }
