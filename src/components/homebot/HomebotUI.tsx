@@ -15,20 +15,26 @@ export const HomebotUI = () => {
 
     setIsThinking(true);
     try {
+      console.log("Sending devices to AI:", state.devices);
       const actions = await aiService.processCommand(input, state.devices);
       
       if (actions.length === 0) {
         showToast("AI couldn't map that command to a device.", "info");
       } else {
         for (const action of actions) {
+          console.log("Processing action:", action); // Added log
           const device = state.devices.find(d => d._id === action.id);
+          console.log("Found device:", device); // Added log
           // Only fire a request if the AI wants to change the state
           if (device && (device.data.on !== (action.action === "on"))) {
+            console.log(`Toggling \${device.name} from \${device.data.on} to \${!device.data.on}`); // Added log
             // Use nullish coalescing operator to provide false if device.data.on is undefined
             await toggleDevice(device._id, device.data.on ?? false);
+          } else {
+            console.log("Skipping toggle: already in desired state or device not found"); // Added log
           }
         }
-        showToast(`AI executed ${actions.length} home commands.`, "success");
+        showToast(`AI executed \${actions.length} home commands.`, "success");
       }
       setInput("");
     } catch { // ✅ Ignored err variable for ESLint warning
@@ -54,7 +60,7 @@ export const HomebotUI = () => {
           className="px-4 py-1 text-sm font-bold text-(--brand) hover:bg-(--brand)/10 rounded-lg disabled:opacity-30"
         >
           {isThinking ? "THINKING..." : "EXECUTE ✨"}
-        </button>d
+        </button>
       </form>
     </div>
   );
