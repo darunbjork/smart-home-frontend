@@ -13,37 +13,33 @@ export const HomebotUI = () => {
     e.preventDefault();
     if (!input.trim() || isThinking) return;
 
-    // Wait for devices to be loaded
     if (state.devices.length === 0) {
       showToast("Devices are still loading. Please wait a moment.", "info");
       return;
     }
 
     setIsThinking(true);
-    try {
-      console.log("Sending devices to AI:", state.devices);
+    try {      console.log("Sending devices to AI:", state.devices);
       const actions = await aiService.processCommand(input, state.devices);
       
       if (actions.length === 0) {
         showToast("AI couldn't map that command to a device.", "info");
       } else {
         for (const action of actions) {
-          console.log("Processing action:", action); // Added log
+          console.log("Processing action:", action);
           const device = state.devices.find(d => d._id === action.id);
-          console.log("Found device:", device); // Added log
-          // Only fire a request if the AI wants to change the state
+          console.log("Found device:", device); 
           if (device && (device.data.on !== (action.action === "on"))) {
-            console.log(`Toggling \${device.name} from \${device.data.on} to \${!device.data.on}`); // Added log
-            // Use nullish coalescing operator to provide false if device.data.on is undefined
+            console.log(`Toggling \${device.name} from \${device.data.on} to \${!device.data.on}`);
             await toggleDevice(device._id, device.data.on ?? false);
           } else {
-            console.log("Skipping toggle: already in desired state or device not found"); // Added log
+            console.log("Skipping toggle: already in desired state or device not found");
           }
         }
         showToast(`AI executed \${actions.length} home commands.`, "success");
       }
       setInput("");
-    } catch { // ✅ Ignored err variable for ESLint warning
+    } catch { 
       showToast("AI Service Timeout. Check your Gemini Key.", "error");
     } finally {
       setIsThinking(false);
