@@ -13,6 +13,12 @@ export const HomebotUI = () => {
     e.preventDefault();
     if (!input.trim() || isThinking) return;
 
+    // Wait for devices to be loaded
+    if (state.devices.length === 0) {
+      showToast("Devices are still loading. Please wait a moment.", "info");
+      return;
+    }
+
     setIsThinking(true);
     try {
       console.log("Sending devices to AI:", state.devices);
