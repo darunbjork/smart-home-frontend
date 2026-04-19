@@ -9,6 +9,10 @@ export const HomebotUI = () => {
   const { state, toggleDevice } = useDevices();
   const { showToast } = useToast();
 
+  const addSpacesToCommand = (cmd: string) => {
+    return cmd.replace(/(turn)(on|off)/gi, '$1 $2');
+  };
+
   const handleAISubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isThinking) return;
@@ -19,27 +23,23 @@ export const HomebotUI = () => {
     }
 
     setIsThinking(true);
-    try {      console.log("Sending devices to AI:", state.devices);
-      const actions = await aiService.processCommand(input, state.devices);
+    try {
+      const processedPrompt = addSpacesToCommand(input);
+      const actions = await aiService.processCommand(processedPrompt, state.devices);
       
       if (actions.length === 0) {
         showToast("AI couldn't map that command to a device.", "info");
       } else {
         for (const action of actions) {
-          console.log("Processing action:", action);
           const device = state.devices.find(d => d._id === action.id);
-          console.log("Found device:", device); 
           if (device && (device.data.on !== (action.action === "on"))) {
-            console.log(`Toggling \${device.name} from \${device.data.on} to \${!device.data.on}`);
             await toggleDevice(device._id, device.data.on ?? false);
-          } else {
-            console.log("Skipping toggle: already in desired state or device not found");
           }
         }
-        showToast(`AI executed \${actions.length} home commands.`, "success");
+        showToast(`AI executed ${actions.length} home commands.`, "success");
       }
       setInput("");
-    } catch { 
+    } catch {
       showToast("AI Service Timeout. Check your Gemini Key.", "error");
     } finally {
       setIsThinking(false);
