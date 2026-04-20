@@ -16,8 +16,6 @@ export const HomebotUI = () => {
     spaced = spaced.replace(/(livingroom)/gi, 'living room');
     spaced = spaced.replace(/(bedroom)/gi, 'bedroom');
     spaced = spaced.replace(/(kitchen)/gi, 'kitchen');
-    // -----------------------------------------
-
     spaced = spaced.replace(/\b(the|in|my|all|light|lights)\b/gi, ' $1 ');
     spaced = spaced.replace(/\s+/g, ' ').trim();
     return spaced;
@@ -51,10 +49,8 @@ export const HomebotUI = () => {
       setInput("");
     } catch (err: unknown) {
   console.error("AI service error:", err);
-  // Safely extract error message, checking for common patterns like Axios errors
   let errorMessage = "AI Service unavailable. Check console.";
   if (typeof err === 'object' && err !== null) {
-    // Safely access nested properties, similar to optional chaining logic
     const errObj = err as { response?: { data?: { message?: string } }; message?: string };
     if (errObj.response?.data?.message) {
       errorMessage = errObj.response.data.message;
