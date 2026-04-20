@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { deviceApi } from "../../api/device.api";
-import { sceneApi } from "../../api/scene.api";
+import { sceneApi, type SceneAction } from "../../api/scene.api";
 import type { Device } from "../../types/device.types";
 import { Button } from "../ui/Button";
 
@@ -24,7 +24,7 @@ export const CreateSceneForm = ({ onSuccess }: { onSuccess: () => void }) => {
       if (deviceId in next) {
         delete next[deviceId]; 
       } else {
-        next[deviceId] = true;
+        next[deviceId] = true; 
       }
       return next;
     });
@@ -36,10 +36,11 @@ export const CreateSceneForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
     setIsSubmitting(true);
     try {
-      const actions = Object.entries(selectedActions).map(([deviceId, targetState]) => ({
+      const actions: SceneAction[] = Object.entries(selectedActions).map(([deviceId, value]) => ({
         deviceId,
         action: 'toggle',
-        value: targetState
+        value: value,
+        data: {}
       }));
 
       await sceneApi.create({
