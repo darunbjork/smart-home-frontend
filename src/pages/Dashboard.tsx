@@ -51,25 +51,26 @@ export const Dashboard = () => {
         </section>
       </ErrorBoundary>
 
-        <section>
-          <header className="flex items-end justify-between mb-8">
-             <div>
-               <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
-               <p className="text-sm text-(--text-secondary)">Control and monitor your hardware.</p>
-             </div>
-             <Button 
-               variant="ghost" 
-               onClick={() => setIsAddModalOpen(true)} 
-               className="text-sm font-semibold text-(--brand) hover:underline"
-             >
-               + Add Device
-             </Button>
-          </header>
+<section className="mt-10">
+  <header className="flex items-end justify-between mb-8">
+     <div>
+       <h3 className="text-2xl font-bold text-(--text-primary)">My Devices</h3>
+       <p className="text-sm text-(--text-secondary)">Control and monitor your smart hardware.</p>
+     </div>
+     {/* KEEP THIS OUTSIDE THE BOUNDARY */}
+     <Button 
+       variant="ghost" 
+       onClick={() => setIsAddModalOpen(true)} 
+       className="text-sm font-semibold text-(--brand) hover:underline"
+     >
+       + Add Device
+     </Button>
+  </header>
+  </section>
 
-          <ErrorBoundary>
-            <DeviceGrid />
-          </ErrorBoundary>
-        </section>
+  <ErrorBoundary> {/* Removed unsupported fallback prop */}
+    <DeviceGrid />
+  </ErrorBoundary>
       
      {isAddModalOpen && (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

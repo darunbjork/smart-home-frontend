@@ -1,7 +1,7 @@
-import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { Link, useLocation } from "react-router-dom";
+import { useHouseholds } from "../../context/HouseholdContextSetup";
+import { useAuth } from "../../context/AuthContextSetup";
 import type { Household } from "../../types/household.types";
-import { useAuth } from "../../context/AuthContextSetup"; 
 
 export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { state: householdState, setActive, createHousehold } = useHouseholds();
@@ -12,7 +12,6 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const handleAddHousehold = async () => {
     const name = window.prompt("Enter new household name:");
     if (!name) return;
-
     try {
       await createHousehold(name);
     } catch (err) {
@@ -36,12 +35,9 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       <nav className="flex-1 overflow-y-auto p-(--space-4)">
         <div className="flex justify-between items-center mb-(--space-4) px-(--space-2)">
           <span className="text-(--text-xs) uppercase tracking-widest font-(--weight-bold)">
-            My Households
+            Workspaces
           </span>
-          <button
-            onClick={handleAddHousehold}
-            className="text-(--brand) hover:opacity-80 text-sm font-bold"
-          >
+          <button onClick={handleAddHousehold} className="text-(--brand) hover:opacity-80 text-sm font-bold">
             + New
           </button>
         </div>
@@ -51,12 +47,11 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
             <button
               key={h._id}
               onClick={() => handleSelect(h._id)}
-              className={`
-                w-full text-left px-(--space-3) py-(--space-2) rounded-(--space-2) transition-all
-                ${householdState.activeHouseholdId === h._id
+              className={`w-full text-left px-(--space-3) py-(--space-2) rounded-xl transition-all ${
+                householdState.activeHouseholdId === h._id
                   ? "bg-(--brand) text-white shadow-lg shadow-(--brand)/20"
-                  : "text-(--text-secondary) hover:bg-(--bg-primary) hover:text-(--text-primary)"}
-              `}
+                  : "text-(--text-secondary) hover:bg-(--bg-primary) hover:text-(--text-primary)"
+              }`}
             >
               {h.name}
             </button>
@@ -64,48 +59,37 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
         </div>
       </nav>
 
-      <div className="p-(--space-4) flex flex-col gap-2 mt-auto">
-        <Link
-          to="/settings"
-          className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-            location.pathname === "/settings"
-              ? "bg-(--bg-primary) text-(--brand) font-bold"
+      <footer className="p-4 border-t border-(--border) flex flex-col gap-2 bg-(--bg-primary)/30">
+        <Link 
+          to="/settings" 
+          className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors ${
+            location.pathname === "/settings" 
+              ? "bg-(--bg-surface) text-(--brand) font-bold shadow-sm" 
               : "text-(--text-secondary) hover:text-(--text-primary)"
           }`}
         >
           ⚙️ Settings
         </Link>
-        <div className="bg-(--bg-primary) p-(--space-3) rounded-(--space-2)">
-            <p className="text-(--text-secondary)">Active Workspace</p>
-            <p className="text-(--text-sm) font-medium truncate">
-                {householdState.households.find((h: Household) => h._id === householdState.activeHouseholdId)?.name || "No Household"}
-            </p>
-        </div>
-
+        
         {user && (
-          <Link 
-            to="/profile" 
-            className="flex items-center gap-3 p-2 hover:bg-(--bg-primary) rounded-lg transition-colors group"
-            onClick={onClose}
-          >
-            <div className="w-8 h-8 bg-(--brand) rounded-full flex items-center justify-center text-xs font-bold">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm font-medium text-(--text-secondary) group-hover:text-(--text-primary)">
-              My Account
-            </span>
-          </Link>
+          <div className="mt-2 p-3 bg-(--bg-surface) border border-(--border) rounded-xl flex items-center justify-between">
+            <Link to="/profile" className="flex items-center gap-3 overflow-hidden group" onClick={onClose}>
+              <div className="w-8 h-8 shrink-0 bg-(--brand) rounded-full flex items-center justify-center text-xs font-bold text-white uppercase">
+                {user.username.charAt(0)}
+              </div>
+              <span className="text-sm font-semibold truncate text-(--text-primary)">
+                {user.username}
+              </span>
+            </Link>
+            <button 
+              onClick={async () => { await logout(); window.location.href = "/login"; }}
+              className="ml-2 text-xs font-bold text-red-400 hover:text-red-300"
+            >
+              Logout
+            </button>
+          </div>
         )}
-         <button
-      onClick={async () => {
-         await logout();
-       window.location.href = "/login";
-        }}
-        className="mt-4 text-sm text-red-400 hover:text-red-300"
-    >
-        Logout
-      </button>
-      </div>
+      </footer>
     </aside>
   );
 };
