@@ -22,9 +22,9 @@ export const CreateSceneForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setSelectedActions(prev => {
       const next = { ...prev };
       if (deviceId in next) {
-        delete next[deviceId]; 
+        delete next[deviceId]; // Remove if toggled off
       } else {
-        next[deviceId] = true; 
+        next[deviceId] = true; // Default to 'on'
       }
       return next;
     });
@@ -32,25 +32,42 @@ export const CreateSceneForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!sceneName || Object.keys(selectedActions).length === 0) return;
+    
+    // Validation: Don't send empty scenes
+    if (!sceneName.trim()) return alert("Please enter a scene name");
+    const deviceIds = Object.keys(selectedActions);
+    if (deviceIds.length === 0) return alert("Select at least one device");
+
+    // Ensure activeHouseholdId is not null before proceeding
+    if (!state.activeHouseholdId) {
+      alert("No active household selected. Please select a household.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      const actions: SceneAction[] = Object.entries(selectedActions).map(([deviceId, value]) => ({
-        deviceId,
-        action: 'toggle',
-        value: value,
-        data: {}
+      // Explicitly type the actions array to SceneAction[]
+      // This helps TypeScript infer the literal type 'toggle' for action
+      const actions: SceneAction[] = deviceIds.map((deviceId): SceneAction => ({
+        deviceId: deviceId,
+        action: 'toggle', // Explicitly 'toggle' literal
+        value: selectedActions[deviceId],
+        data: {} // Added to satisfy the SceneAction type requirement
       }));
 
-      await sceneApi.create({
+      const payload = {
         name: sceneName,
-        householdId: state.activeHouseholdId!,
+        householdId: state.activeHouseholdId, // Now guaranteed to be string if check passes
         actions
-      });
-      onSuccess();
+      };
+
+      console.log("Sending Scene Payload:", payload); // Debugging is your best friend
+      await sceneApi.create(payload);
+      
+      onSuccess(); // This closes the modal and refreshes the list
     } catch (err) {
-      console.error("Failed to create scene", err);
+      console.error("Save Scene Error:", err);
+      alert("Could not save scene. Check console for details.");
     } finally {
       setIsSubmitting(false);
     }
