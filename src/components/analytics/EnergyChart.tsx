@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useHouseholds } from "../../context/HouseholdContextSetup";
 import { deviceApi } from "../../api/device.api";
 import { energyUtils } from "../../utils/energy.utils";
@@ -25,8 +25,8 @@ export const EnergyChart = () => {
   
   const averageUsage = useMemo(() => {
     if (trendData.length === 0) return 0;
-    const totalUsage = trendData.reduce((sum, point) => sum + point.usage, 0);
-    return parseFloat((totalUsage / trendData.length).toFixed(1));
+    const total = trendData.reduce((sum, point) => sum + point.usage, 0);
+    return parseFloat((total / trendData.length).toFixed(1));
   }, [trendData]);
 
   if (loading) return <div className="h-64 bg-(--bg-surface) animate-pulse rounded-2xl border border-(--border)" />;
@@ -54,15 +54,15 @@ export const EnergyChart = () => {
 
       <div className="flex items-end justify-between h-40 gap-2">
         {trendData.map((point) => {
-          // Fix: Ensure we don't divide by zero and provide a minimum scale
+          // Calculation check: prevent division by zero and ensure a minimum scale
           const maxScale = averageUsage > 0 ? averageUsage * 2 : 1;
-          const barHeight = Math.min((point.usage / maxScale) * 100, 100);
+          const barHeight = Math.max((point.usage / maxScale) * 100, 5); // Min 5% height
 
           return (
             <div key={point.day} className="relative flex flex-col items-center flex-1 gap-2 group">
               <div 
                 className="w-full bg-(--brand)/20 rounded-t-lg transition-all duration-500 group-hover:bg-(--brand)"
-                style={{ height: `${Math.max(barHeight, 5)}%` }} // Minimum 5% height so bars are always visible
+                style={{ height: `${barHeight}%` }}
               >
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-(--text-primary) text-white text-[10px] py-1 px-2 rounded absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none">
                   {point.usage} kWh

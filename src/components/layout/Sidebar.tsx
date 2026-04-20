@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
 import { useHouseholds } from "../../context/HouseholdContextSetup";
-import { useAuth } from "../../context/AuthContextSetup";
+import { Link, useLocation } from "react-router-dom";
 import type { Household } from "../../types/household.types";
+import { useAuth } from "../../context/AuthContextSetup"; 
 
 export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { state: householdState, setActive, createHousehold } = useHouseholds();
@@ -37,7 +37,10 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
           <span className="text-(--text-xs) uppercase tracking-widest font-(--weight-bold)">
             Workspaces
           </span>
-          <button onClick={handleAddHousehold} className="text-(--brand) hover:opacity-80 text-sm font-bold">
+          <button 
+            onClick={handleAddHousehold} 
+            className="text-(--brand) hover:opacity-80 text-sm font-bold"
+          >
             + New
           </button>
         </div>
@@ -47,7 +50,7 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
             <button
               key={h._id}
               onClick={() => handleSelect(h._id)}
-              className={`w-full text-left px-(--space-3) py-(--space-2) rounded-xl transition-all ${
+              className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 householdState.activeHouseholdId === h._id
                   ? "bg-(--brand) text-white shadow-lg shadow-(--brand)/20"
                   : "text-(--text-secondary) hover:bg-(--bg-primary) hover:text-(--text-primary)"
@@ -60,20 +63,20 @@ export const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       </nav>
 
       <footer className="p-4 border-t border-(--border) flex flex-col gap-2 bg-(--bg-primary)/30">
-        <Link 
-          to="/settings" 
+        <Link
+          to="/settings"
           className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors ${
-            location.pathname === "/settings" 
-              ? "bg-(--bg-surface) text-(--brand) font-bold shadow-sm" 
+            location.pathname === "/settings"
+              ? "bg-(--bg-surface) text-(--brand) font-bold shadow-sm"
               : "text-(--text-secondary) hover:text-(--text-primary)"
           }`}
         >
           ⚙️ Settings
         </Link>
-        
+
         {user && (
           <div className="mt-2 p-3 bg-(--bg-surface) border border-(--border) rounded-xl flex items-center justify-between">
-            <Link to="/profile" className="flex items-center gap-3 overflow-hidden group" onClick={onClose}>
+            <Link to="/profile" className="flex items-center flex-1 min-w-0 gap-3" onClick={onClose}>
               <div className="w-8 h-8 shrink-0 bg-(--brand) rounded-full flex items-center justify-center text-xs font-bold text-white uppercase">
                 {user.username.charAt(0)}
               </div>
