@@ -26,6 +26,12 @@ const mockCreateScene = async (sceneData: { name: string; householdId: string; a
   };
 };
 
+// Mock function to simulate API call for executing a scene
+const mockExecuteScene = async (sceneId: string): Promise<void> => {
+  console.log(`Mock API Call: Executing scene ${sceneId}`);
+  await new Promise(resolve => setTimeout(resolve, 400)); // Simulate delay
+};
+
 export const sceneApi = {
   getByHousehold: async (householdId: string): Promise<MockScene[]> => {
     // Returning static data that matches the Scene type, preventing crashes/hanging
@@ -42,5 +48,7 @@ export const sceneApi = {
     await new Promise(resolve => setTimeout(resolve, 200)); // Simulate delay
   },
   // Add the create method
-  create: mockCreateScene
+  create: mockCreateScene,
+  // Add the execute method
+  execute: mockExecuteScene
 };

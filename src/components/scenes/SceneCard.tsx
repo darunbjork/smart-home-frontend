@@ -1,22 +1,16 @@
 import { useState } from "react";
+import { sceneApi } from "../../api/scene.api";
 import type { Scene } from "../../types/scene.types";
-import { sceneService } from "../../services/scene.service";
 
-interface SceneCardProps {
-  scene: Scene;
-}
-
-export const SceneCard = ({ scene }: SceneCardProps) => {
+export const SceneCard = ({ scene }: { scene: Scene }) => { 
   const [isExecuting, setIsExecuting] = useState(false);
 
   const handleExecute = async () => {
-    if (isExecuting) return;
-    
     setIsExecuting(true);
     try {
-      await sceneService.execute(scene);
-    } catch (error) {
-      console.error("Scene execution failed", error);
+      await sceneApi.execute(scene._id); 
+    } catch (err) {
+      console.error("Failed to fire scene:", err);
     } finally {
       setTimeout(() => setIsExecuting(false), 600);
     }
@@ -26,24 +20,28 @@ export const SceneCard = ({ scene }: SceneCardProps) => {
     <button
       onClick={handleExecute}
       disabled={isExecuting}
-      className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all duration-300 group
-        ${isExecuting 
-          ? 'bg-(--brand) border-(--brand) scale-95' 
-          : 'bg-(--bg-surface) border-(--border) hover:border-(--brand)/50 hover:shadow-lg hover:shadow-(--brand)/5'
-        }`}
+      className={`relative overflow-hidden group p-6 rounded-2xl border transition-all text-left ${
+        isExecuting 
+          ? "border-(--brand) bg-(--brand)/5 scale-95" 
+          : "border-(--border) bg-(--bg-surface) hover:border-(--brand) hover:shadow-md active:scale-95"
+      }`}
     >
-      <div className={`text-2xl transition-transform duration-500 ${isExecuting ? 'animate-spin' : 'group-hover:scale-110'}`}>
-        {scene.icon || '🎬'}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-2xl transition-transform group-hover:scale-110">
+          {isExecuting ? "⚡" : scene.icon || "🎬"}
+        </span>
+        {isExecuting && (
+          <div className="w-4 h-4 border-2 border-(--brand) border-t-transparent rounded-full animate-spin" />
+        )}
       </div>
       
-      <span className={`text-xs font-bold uppercase tracking-tighter transition-colors ${
-        isExecuting ? 'text-white' : 'text-(--text-secondary) group-hover:text-(--brand)'
-      }`}>
-        {scene.name}
-      </span>
-
+      <h4 className="font-bold text-(--text-primary)">{scene.name}</h4>
+      <p className="text-xs text-(--text-secondary) mt-1">
+        {scene.actions.length} devices configured
+      </p>
+      
       {isExecuting && (
-        <div className="absolute inset-0 bg-white/10 rounded-2xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 h-1 bg-(--brand) animate-progress-fast" />
       )}
     </button>
   );
