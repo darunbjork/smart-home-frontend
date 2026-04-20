@@ -49,12 +49,26 @@ export const HomebotUI = () => {
         showToast(`AI executed ${actions.length} home commands.`, "success");
       }
       setInput("");
-    } catch {
-      showToast("AI Service Timeout. Check your Gemini Key.", "error");
-    } finally {
-      setIsThinking(false);
+    } catch (err: unknown) {
+  console.error("AI service error:", err);
+  // Safely extract error message, checking for common patterns like Axios errors
+  let errorMessage = "AI Service unavailable. Check console.";
+  if (typeof err === 'object' && err !== null) {
+    // Safely access nested properties, similar to optional chaining logic
+    const errObj = err as { response?: { data?: { message?: string } }; message?: string };
+    if (errObj.response?.data?.message) {
+      errorMessage = errObj.response.data.message;
+    } else if (errObj.message) {
+      errorMessage = errObj.message;
     }
+  }
+  showToast(errorMessage, "error");
+} finally {
+  setIsThinking(false);
+}
   };
+
+  
 
   return (
     <div className="bg-(--bg-surface) border border-(--brand)/20 p-4 rounded-2xl shadow-lg mb-8 group focus-within:border-(--brand) transition-all">
